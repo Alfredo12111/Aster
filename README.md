@@ -37,7 +37,7 @@ Your vault is a folder you own. The core experience works without an account, cl
 | **Find useful connections** | On-device suggestions explain shared concepts. Optionally bring your own AI provider key to review candidate connections. You decide what becomes a link. |
 | **Work with dates** | Built-in day, week, and month Calendar views. Open or create daily notes, browse date metadata, and see tasks due that day. |
 | **Move projects forward** | Tasks with source notes, excerpts, due dates, statuses, priorities, and projects. Project views bring related notes and tasks together. |
-| **Read with a pen in hand** | PDF highlights, underlines, strikeouts, area comments, and freehand ink. Search annotations and jump straight to their page and location. |
+| **Read with a pen in hand** | PDF highlights, underlines, strikeouts, area comments, and freehand ink. Search annotations, jump to their location, and work with rotated or cropped pages. |
 | **Keep live answers in view** | Pin Aster Query results to movable, resizable Canvas cards. Tables refresh when the underlying notes change. |
 | **Navigate large collections** | Browse a virtualized tree based on folders or frontmatter hierarchy. Combine metadata, folder, and text filters while retaining parent context. |
 | **Prepare knowledge for RAG** | Export JSONL chunks with source paths, note IDs, revisions, character spans, tags, and accepted relationships. |

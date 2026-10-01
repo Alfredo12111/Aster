@@ -1024,6 +1024,7 @@
   flex: 1;
   min-width: 0;
   overflow: auto;
+  scroll-padding: 48px 16px 16px;
   padding: 0 25px 40px;
   background: #171e27;
 }

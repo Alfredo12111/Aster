@@ -20,7 +20,7 @@ The initial GitHub publication also passed two publication-guard tests, bringing
 
 The distribution is rebuilt from an explicit file allowlist and includes Aster’s MIT license plus dependency notices. Personal vaults, app profiles, keys, test data, logs, source maps, local tools and generated binaries are excluded from source control. Repeatable publication and release checks are included in the GitHub workflows.
 
-The PDF desktop test waits for the viewer to accept pointer input and for Chromium's actual text selection before releasing the drag. This avoids racing asynchronous rendering or saving on the Windows runner; saved annotation counts and geometry are still checked through the real app.
+The module desktop test uses a 1280 × 720 viewport, centers PDF text below the sticky instructions, waits for the viewer to accept pointer input, and checks Chromium's actual selection before releasing the drag. PDF scroll padding reserves space for the instructions bar. Saved annotation counts and geometry are still checked through the real app.
 
 ## Reproduce
 

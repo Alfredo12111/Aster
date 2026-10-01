@@ -19,6 +19,7 @@ const launchOptions = {
 };
 let instance = await electron.launch(launchOptions);
 let page = await instance.firstWindow();
+await page.setViewportSize({ width: 1280, height: 720 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 page.setDefaultTimeout(15000);
@@ -217,7 +218,9 @@ try {
     // The viewer centers a newly loaded annotation on the next animation frame.
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const span = page.locator(".textLayer span").nth(index);
-    await span.scrollIntoViewIfNeeded();
+    // Center the line below the sticky PDF instructions. Nearest-edge scrolling
+    // can leave text covered by that header on a short CI desktop.
+    await span.evaluate(el => el.scrollIntoView({block: 'center', inline: 'center'}));
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const b = await span.boundingBox();
     const vertical = b.height > b.width;
@@ -393,6 +396,7 @@ try {
   await instance.close();
   instance = await electron.launch(launchOptions);
   page = await instance.firstWindow();
+  await page.setViewportSize({ width: 1280, height: 720 });
   page.on("pageerror", (e) => errors.push(e.message));
   page.setDefaultTimeout(15000);
   await expect(page.locator(".tree-note")).toHaveCount(20);
