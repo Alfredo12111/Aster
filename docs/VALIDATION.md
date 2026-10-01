@@ -20,6 +20,8 @@ The initial GitHub publication also passed two publication-guard tests, bringing
 
 The distribution is rebuilt from an explicit file allowlist and includes Aster’s MIT license plus dependency notices. Personal vaults, app profiles, keys, test data, logs, source maps, local tools and generated binaries are excluded from source control. Repeatable publication and release checks are included in the GitHub workflows.
 
+The PDF desktop test waits for the viewer to accept pointer input and for Chromium's actual text selection before releasing the drag. This avoids racing asynchronous rendering or saving on the Windows runner; saved annotation counts and geometry are still checked through the real app.
+
 ## Reproduce
 
 Run `npm run build`, `npm test`, `npm run test:desktop`, and `npm run test:modules`. Set `ASTER_PACKAGED_EXE` to the absolute path of `release/win-unpacked/Aster.exe` to test the packaged app. Both desktop suites create isolated profiles and use no personal vault or API key. The PDF import test replaces only the native file-picker result to choose its generated fixture; import, rendering, editing and persistence use the actual app APIs and UI.

@@ -213,6 +213,7 @@ try {
   ).toBe(sidebarColor);
   const selectText = async (index = 0) => {
     await expect(page.locator('.pdf-instructions')).not.toContainText('Rendering');
+    await expect(page.locator('.pdf-page')).not.toHaveCSS('pointer-events', 'none');
     // The viewer centers a newly loaded annotation on the next animation frame.
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const span = page.locator(".textLayer span").nth(index);
@@ -230,6 +231,12 @@ try {
       vertical ? b.y + b.height - 2 : b.y + b.height / 2,
       { steps: 10 },
     );
+    // Chromium can paint the final drag selection after the mouse-move command
+    // resolves. Release only after the real browser selection covers the line;
+    // the small pointer inset may omit a boundary punctuation glyph.
+    const text = (await span.textContent()).trim();
+    await expect.poll(() => page.evaluate(() => window.getSelection()?.toString().trim()))
+      .toContain(text.slice(1, -1));
     await page.mouse.up();
   };
   step("Text highlight, underline, strikeout and area comments");

@@ -26,5 +26,6 @@
 - Offline PDF resources and scoped text-layer styles.
 - 30 automated tests (including 28 core/storage/provider/protocol tests) plus packaged desktop workflows, restart/coordinate checks and a 1,500-note navigator scenario.
 - GitHub project page, source/run instructions, contribution guidance, publication audits and Windows release packaging.
+- Desktop PDF checks wait for interactive rendering and native text selection before validating saved annotations.
 
 Cloud sync, persistent large-vault indexing, annotated PDF export, OCR and a signed installer remain outside this alpha.
