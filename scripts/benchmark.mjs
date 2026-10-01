@@ -1,0 +1,22 @@
+import { build } from 'esbuild';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs/promises';
+await fs.mkdir('test-results', {recursive:true});
+await build({ stdin: { contents: `
+import { buildEdges, suggestConnections } from './packages/core/knowledge';
+import { exportChunks } from './packages/core/rag';
+import { defaultSettings } from './packages/core/types';
+import { createHash } from 'node:crypto';
+import { writeFileSync } from 'node:fs';
+const count = 10000;
+const notes = Array.from({length:count}, (_,i)=> { const content = '# Concept '+i+'\\n\\nSemantic retrieval evidence source provenance cluster '+(i%100)+' '+(i+1<count?'[[Concept '+(i+1)+']]':'')+'\\n\\n#retrieval'; return {id:'note-'+i,path:'Topics/Concept '+i+'.md',title:'Concept '+i,content,revision:createHash('sha256').update(content).digest('hex'),modifiedAt:1,tags:['retrieval']}; });
+const vault={id:'benchmark',name:'Benchmark',root:'',notes,folders:['Topics'],settings:defaultSettings()};
+const timings={};
+let t=performance.now(); const edges=buildEdges(vault); timings.linkIndexMs=+(performance.now()-t).toFixed(1);
+t=performance.now(); const suggestions=suggestConnections(vault,notes[0].id); timings.suggestionQueryMs=+(performance.now()-t).toFixed(1);
+t=performance.now(); const chunks=exportChunks(vault); timings.ragExportMs=+(performance.now()-t).toFixed(1);
+if(edges.length!==count-1||chunks.length!==count||suggestions.length!==6) throw new Error('Incorrect benchmark result');
+const result={date:new Date().toISOString(),runtime:process.version,notes:count,edges:edges.length,chunks:chunks.length,timings,scope:'Synthetic short-note core algorithms only; not desktop FPS, disk import, cloud load, or an SLA.'};
+writeFileSync('test-results/benchmark.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+`, resolveDir:process.cwd(),sourcefile:'benchmark.ts',loader:'ts'},outfile:'test-results/benchmark.cjs',bundle:true,platform:'node',format:'cjs'});
+const result=spawnSync(process.execPath,['test-results/benchmark.cjs'],{stdio:'inherit'});process.exitCode=result.status;

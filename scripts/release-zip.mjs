@@ -1,0 +1,23 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { createReadStream } from 'node:fs';
+import { auditSource } from './audit-publish.mjs';
+import { auditRelease } from './audit-release.mjs';
+
+if(process.platform!=='win32')throw new Error('Windows release packaging must run on Windows.');
+await auditSource();
+const directory=await auditRelease();
+const {version}=JSON.parse(await fs.readFile('package.json','utf8'));
+if(!/^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$/.test(version))throw new Error('Invalid release version');
+await fs.copyFile('docs/GETTING-STARTED.md',path.join(directory,'GETTING-STARTED.md'));
+await fs.copyFile('THIRD-PARTY-NOTICES.txt',path.join(directory,'THIRD-PARTY-NOTICES.txt'));
+await fs.copyFile('LICENSE',path.join(directory,'LICENSE-ASTER.txt'));
+await fs.mkdir('artifacts',{recursive:true});
+const archive=path.resolve('artifacts',`Aster-${version}-windows-x64.zip`);
+const quote=s=>`'${s.replaceAll("'","''")}'`;
+execFileSync('powershell.exe',['-NoProfile','-NonInteractive','-Command',`Compress-Archive -Path ${quote(path.join(directory,'*'))} -DestinationPath ${quote(archive)} -CompressionLevel Optimal -Force`],{stdio:'inherit'});
+const hash=createHash('sha256');for await(const chunk of createReadStream(archive))hash.update(chunk);
+await fs.writeFile('artifacts/SHA256SUMS.txt',`${hash.digest('hex')}  ${path.basename(archive)}\n`);
+console.log(`Created ${path.basename(archive)} and SHA256SUMS.txt. The ZIP contains the whole runnable application, never a vault or app profile.`);

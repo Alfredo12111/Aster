@@ -1,0 +1,43 @@
+name: Windows release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: node node_modules/electron/install.js
+      - name: Check tag matches package version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag must match package version' }
+      - run: npm run audit:publish
+      - run: npm test
+      - run: npm run package
+      - name: Test packaged app
+        shell: pwsh
+        run: |
+          $env:ASTER_PACKAGED_EXE = Join-Path $PWD 'release/win-unpacked/Aster.exe'
+          npm run test:desktop
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run test:modules
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - run: npm run release:zip
+      - name: Publish checked assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $assets = Get-ChildItem artifacts -File | ForEach-Object { $_.FullName }
+          gh release create $env:GITHUB_REF_NAME @assets --verify-tag --prerelease --title "Aster $env:GITHUB_REF_NAME" --notes-file docs/RELEASE-NOTES.md

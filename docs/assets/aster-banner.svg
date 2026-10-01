@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">Aster — Make room for connected thinking.</title>
+  <desc id="desc">A local-first knowledge workspace with a customizable graph, Markdown vaults, and built-in research tools.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#171b20"/><stop offset="1" stop-color="#222c37"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#e6bb78" stop-opacity=".13"/><stop offset="1" stop-color="#e6bb78" stop-opacity="0"/></radialGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".8" fill="#8191a8" opacity=".13"/></pattern>
+  </defs>
+  <rect width="1280" height="360" rx="18" fill="url(#bg)"/><rect width="1280" height="360" rx="18" fill="url(#dots)"/>
+  <circle cx="1020" cy="168" r="236" fill="url(#glow)"/>
+  <g stroke="#e6bb78" stroke-width="3" stroke-linecap="round"><path d="M64 48v42M43 69h42M49 54l30 30M49 84l30-30"/></g>
+  <text x="102" y="83" font-family="Segoe UI,Arial,sans-serif" font-size="48" font-weight="650" fill="#f4f0e9">aster</text>
+  <text x="44" y="166" font-family="Segoe UI,Arial,sans-serif" font-size="37" fill="#f4f0e9">Make room for</text>
+  <text x="44" y="213" font-family="Segoe UI,Arial,sans-serif" font-size="37" fill="#e6bb78">connected thinking.</text>
+  <text x="47" y="267" font-family="Segoe UI,Arial,sans-serif" font-size="17" fill="#a6b4c6">Your files. Your graph. Your way of working.</text>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="11" letter-spacing="2" fill="#91a4ba"><text x="47" y="315">LOCAL FIRST</text><text x="195" y="315">MARKDOWN</text><text x="340" y="315">VISUAL KNOWLEDGE</text></g>
+  <g stroke-width="1.4" fill="none"><path d="M938 174L788 91 782 254 938 174 1062 61 1168 142 938 174 1084 278 782 254M788 91L1062 61M1084 278L1168 142" stroke="#7a95b5" opacity=".35"/><path d="M938 174L893 60M938 174L985 301M788 91L782 254" stroke="#e6bb78" opacity=".55"/></g>
+  <circle cx="938" cy="174" r="31" fill="#e6bb78" opacity=".07"/><circle cx="938" cy="174" r="20" fill="#e6bb78" opacity=".13"/><circle cx="938" cy="174" r="9" fill="#e6bb78"/>
+  <g fill="#81bdb1"><circle cx="1062" cy="61" r="6"/><circle cx="1168" cy="142" r="6"/></g><g fill="#ac9ad4"><circle cx="1084" cy="278" r="6"/><circle cx="985" cy="301" r="5"/></g><circle cx="782" cy="254" r="6" fill="#dd919d"/><circle cx="788" cy="91" r="7" fill="#8baed8"/><circle cx="893" cy="60" r="5" fill="#e6bb78"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#aab8c9"><text x="897" y="207" fill="#e9d1ab">Your knowledge</text><text x="750" y="74">Notes</text><text x="1040" y="43">Sources</text><text x="1136" y="171">Questions</text><text x="1058" y="305">Connections</text><text x="749" y="281">Projects</text></g>
+</svg>
