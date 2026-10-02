@@ -34,16 +34,18 @@ Your vault is a folder you own. The core experience works without an account, cl
 | --- | --- |
 | **Write and organize** | Local Markdown vaults, nested folders, search, wiki-link completion, backlinks, formatted preview, and multiple resizable panes, movable tabs, and saved layouts. |
 | **Make the graph yours** | Drag and pin nodes, change folder and note colors, add directed relationships, save filtered views, and choose clustered, radial, or force-based layouts. |
+| **Follow the evidence** | Attach exact saved note passages and PDF annotations to manual relationships. Open the source and review changed or missing evidence. |
+| **Map your whole workspace** | Add live tool nodes for workbooks, charts, Kanban, Canvas, projects, tasks, PDFs and Calendar. Switch between the graph and an evenly spaced folder or metadata tree. |
 | **Find useful connections** | On-device suggestions explain shared concepts. Optionally bring your own AI provider key to review candidate connections. You decide what becomes a link. |
 | **Work with dates** | Built-in day, week, and month Calendar views. Open or create daily notes, browse date metadata, and see tasks due that day. |
 | **Move projects forward** | Tasks with source notes, excerpts, due dates, statuses, priorities, and projects. Project views bring related notes and tasks together. |
 | **Read with a pen in hand** | PDF highlights, underlines, strikeouts, area comments, and freehand ink. Search annotations, jump to their location, and work with rotated or cropped pages. |
 | **Keep live answers in view** | Pin Aster Query results to movable, resizable Canvas cards. Tables refresh when the underlying notes change. |
 | **Navigate large collections** | Browse a virtualized tree based on folders or frontmatter hierarchy. Combine metadata, folder, and text filters while retaining parent context. |
-| **Explore structured data** | Thirteen chart types; live queries and Markdown tables; CSV/XLSX import; editable worksheets, formulas, statistics, trendlines, and PNG/SVG/CSV exports. |
+| **Explore structured data** | Thirteen chart types; live queries and Markdown tables; CSV/XLSX import; editable worksheets with sorting, filtering, relative fill, reference-aware row/column edits, summaries, number formats, formula XLSX export, statistics and trendlines. |
 | **Organize work visually** | Native Kanban columns and ordered cards connected to tasks, notes and projects. Moving a card updates task status everywhere. |
 | **Arrange your workspace** | Combine any views in up to eight resizable panes, move tabs between panes, and save layouts. Choose Aster, Cyber, Lavender, Deep Ocean, Paper, or Rosewood. |
-| **Prepare knowledge for RAG** | Export JSONL chunks with source paths, note IDs, revisions, character spans, tags, and accepted relationships. |
+| **Prepare knowledge for RAG** | Export JSONL chunks with source paths, note IDs, revisions, character spans, tags, and accepted note relationships, including captured evidence. |
 
 Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban are enabled by default in new vaults. Manage them from the **puzzle icon**. Turning one off preserves its data; existing vault choices are retained.
 
@@ -62,7 +64,19 @@ Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban a
 Screenshots use generated sample content, not personal vaults.
 </details>
 
-## New in 0.3
+## New in 0.4
+
+Keep the research trail together: pin a workbook to the map, connect it to a conclusion, and attach the note passage or PDF annotation behind that connection. The node opens the original tool and shows its current title. Workbook edits update dependent charts, including range changes when inserting rows.
+
+![Aster connected tree](docs/assets/tree.png)
+
+[Connected maps and evidence](docs/CONNECTED-WORKSPACE.md) explains the new controls and source-review behavior.
+
+<table>
+<tr><td width="50%"><img src="docs/assets/evidence.png" alt="Exact note and PDF evidence on a connection"><br><strong>Connections with a source trail</strong></td><td width="50%"><img src="docs/assets/workbook.png" alt="Research workbook editing and range statistics"><br><strong>Workbooks for research and analysis</strong></td></tr>
+</table>
+
+## Charts and flexible workspaces
 
 ![Live charts with an editable data source](docs/assets/charts.png)
 
@@ -76,7 +90,7 @@ Read the [charts and formulas guide](docs/CHARTS.md), [workspace controls](docs/
 
 ### Download the Windows app
 
-1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.3.2-windows-x64.zip**.
+1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.4.0-windows-x64.zip**.
 2. **Extract the entire ZIP** to a normal folder.
 3. Open **Aster.exe** inside it. Keep the accompanying files beside the executable.
 4. Explore the welcome vault, or choose **New vault** / **Open** for your own notes.
@@ -108,8 +122,8 @@ My Vault/
   Attachments/
     source.pdf
   .aster/
-    vault.json       # note identity, graph views, relationships
-    modules.json     # tasks, projects, Canvas, PDFs, charts, Kanban, layouts
+    vault.json       # note identity, graph views, relationships and evidence
+    modules.json     # tools, resource nodes, layouts and themes
     history/         # earlier note content
     module-history/  # earlier module state
     trash/           # recoverable deleted notes
@@ -143,7 +157,7 @@ The working modules above are implemented and tested. Charting includes all requ
 
 Current protective limits are 20,000 Markdown notes, 2 MB per note, 100 MB of total note text, and 100 MB per PDF. These are limits, not performance promises. The app still loads full note snapshots. The metadata navigator is virtualized; the original file explorer is not.
 
-The validation record covers **56 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
+The validation record covers **66 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
 
 ## Build with us
 
@@ -157,6 +171,7 @@ npm test
 npm run test:desktop
 npm run test:modules
 npm run test:visual
+npm run test:ecosystem
 npm run audit:publish
 ```
 

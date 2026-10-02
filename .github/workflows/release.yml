@@ -35,6 +35,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm run test:visual
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run test:ecosystem
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - run: npm run release:zip
       - name: Publish checked assets
         shell: pwsh

@@ -1,11 +1,11 @@
 # Validation record
 
-Aster 0.3.2, tested 2 October 2026 on the development Windows host with Node.js 24.19.0.
+Aster 0.4.0, tested 2 October 2026 on the development Windows host with Node.js 24.19.0.
 
 ## Completed
 
 - TypeScript typecheck and production renderer/main/preload build.
-- 56 automated tests across ten source files. The original core/storage/provider-mock/protocol coverage includes: wiki link resolution and ambiguity, code exclusion, typed relationships, local suggestions, RAG span coverage and stable IDs, native save/reopen/history, stale/concurrent write rejection, unsafe paths/junctions, move collision and trash, corrupt manifest preservation, provider key boundary and response validation, cross-vault sync batches.
+- 66 automated tests across eleven source files. The original core/storage/provider-mock/protocol coverage includes: wiki link resolution and ambiguity, code exclusion, typed relationships, local suggestions, RAG span coverage and stable IDs, native save/reopen/history, stale/concurrent write rejection, unsafe paths/junctions, move collision and trash, corrupt manifest preservation, provider key boundary and response validation, cross-vault sync batches.
 - An isolated session of the packaged Windows executable verifies startup, nested note creation, editing/autosave to an actual Markdown file, wiki links, typed relationships, formatted preview, saved views, filtering, background layout, masked key field, persistence reload, drag-position persistence, external edit conflict recovery, and sandbox/context isolation.
 - Added core/storage tests cover bounded YAML and typed metadata, date-only arithmetic across leap days/year/DST boundaries, Aster Query filtering/sorting/limits and rejected syntax, hierarchy cycles/missing parents, a 10,000-note chain, idempotent daily notes, module round-trip and disabling, stale module writes, duplicate IDs, path normalization/traversal rejection, PDF deduplication, source-fingerprint mismatch, annotation geometry validation and corrupt-sidecar preservation.
 - The module desktop suite passes against the actual packaged executable. It exercises all three calendar views; daily-note creation; task creation from notes with status/priority/due/project; project-related notes; live Canvas queries with external Markdown changes; additional-filter preservation in the builder; saved card movement/resizing; metadata filters and ancestor context; all five PDF tools; comment editing/deletion/search; undo/redo; annotation navigation; zoom/rotation; and module disable/re-enable.
@@ -16,9 +16,15 @@ Aster 0.3.2, tested 2 October 2026 on the development Windows host with Node.js 
 
 ## New visual workspace coverage
 
-All three desktop suites passed locally against the packaged 0.3.2 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
+All four desktop suites passed locally against the packaged 0.4.0 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
 
 Core tests additionally check finite chart options, invalid OHLC, category aggregation, calendar duplicates/invalid dates, exact category trend predictions, polynomial/exponential fits, PMT/NPV/FV, formula errors/cycles, CSV escaping, XLSX round trips/archive limits, old-sidecar defaults, Kanban ordering, and nested pane identity/collapse rules. Test discovery is limited to tests/; ignored local audit copies are not counted.
+
+## Connected workspace coverage
+
+The fourth desktop suite pins all eight tool kinds through the UI, checks folder/metadata trees and derived chart links, opens the original items, edits and fills formulas, inserts/deletes rows, checks linked chart range undo/redo and worksheet renaming, edits filtered/sorted source rows, verifies summaries/formats and formula XLSX export, attaches note/PDF evidence, verifies the selected note passage via its task excerpt, flags an external note revision, opens the exact PDF annotation, and compares persisted data after a full restart. The fixtures are synthetic and the native file-dialog result is stubbed only to select them.
+
+Core tests cover stable resource identities, missing sources, source-derived edges, evidence revision/annotation changes, non-overlapping tree layers, relative/absolute formula fill, structural references, sheet names with apostrophes, known COUNTIF/SUMIF/VLOOKUP/AVERAGE/STDEV.S results, formula export safety, and conflicting chart-source undo.
 
 ## Publication checks
 
@@ -30,7 +36,7 @@ The module desktop test uses a 1280 × 720 viewport, centers PDF text below the 
 
 ## Reproduce
 
-Run `npm run build`, `npm test`, `npm run test:desktop`, `npm run test:modules`, and `npm run test:visual`. Set `ASTER_PACKAGED_EXE` to the absolute path of `release/win-unpacked/Aster.exe` to test the packaged app. All three desktop suites create isolated profiles and use no personal vault or API key. The PDF import test replaces only the native file-picker result to choose its generated fixture; import, rendering, editing and persistence use the actual app APIs and UI.
+Run `npm run build`, `npm test`, `npm run test:desktop`, `npm run test:modules`, `npm run test:visual`, and `npm run test:ecosystem`. Set `ASTER_PACKAGED_EXE` to the absolute path of `release/win-unpacked/Aster.exe` to test the packaged app. All four desktop suites create isolated profiles and use no personal vault or API key. The PDF import test replaces only the native file-picker result to choose its generated fixture; import, rendering, editing and persistence use the actual app APIs and UI.
 
 Windows packaging completed with `npm run package`. The directory build is unsigned and requires its entire `win-unpacked` folder. Shipped capabilities are in FEATURES.md and CHARTS.md; ADDON-ROADMAP.md contains remaining work only.
 

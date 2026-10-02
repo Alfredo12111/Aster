@@ -10,7 +10,7 @@
 The current Windows x64 build is unsigned. Windows may show a reputation warning. Check that the download comes from the repository linked above and compare its SHA-256 checksum with the release's `SHA256SUMS.txt` before deciding to run it:
 
 ```powershell
-Get-FileHash .\Aster-0.3.2-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\Aster-0.4.0-windows-x64.zip -Algorithm SHA256
 ```
 
 This directory build does not install a Windows service or require Node.js. You may move the extracted app folder later. Your notes and app settings are stored separately from that folder; this is not a fully portable user profile.
@@ -27,18 +27,22 @@ No account, API key, or internet connection is required for local notes and modu
 
 ## Make it your workspace
 
-- Use **＋ View** in a pane to add Web, Text, Calendar, PDF Annotation, Charts, Kanban, or another tool. All modules start enabled in new vaults; manage their switches from the puzzle icon.
+- Use **＋ View** in a pane to add Web, Tree, Text, Calendar, PDF Annotation, Charts, Kanban, or another tool. All modules start enabled in new vaults; manage their switches from the puzzle icon.
 - Use **Split pane right** or **Split pane below** beside the tabs. Drag the border between panes; double-click it to reset to equal sizes. The focused border also accepts arrow keys.
 - Drag tabs to another pane. **Save layout** names the arrangement; **Saved layouts** restores it. The current arrangement also returns on restart.
 - Use **Appearance & themes** on the lower left for six themes, including Cyber and Lavender.
 - In **Charts**, try sample data or import CSV/XLSX. Edit cells in the formula bar, select a range with its header row, and choose **Chart selection**. Configure the chart on the right.
 - In **Kanban**, create a board, add cards, and drag them between columns. They are the same tasks shown in Tasks and Calendar.
 
+- In the graph, choose **Tree view** for the organized diagram. Select folders or parent metadata, zoom and collapse branches. Filtering reveals matching branches.
+- **Add tool node** pins an existing workbook, chart, board, project, task, PDF or Calendar. Double-click its node to open the original item. Select it once for placement, color and relationship controls.
+- Open **Evidence** beside a manual connection. Attach an exact saved note passage or existing PDF annotation, then use **Open evidence source** to revisit it.
+
 ## Where your work lives
 
 - Notes are regular Markdown files in your vault folder.
-- `.aster/vault.json` preserves note identities, graph views and accepted relationships.
-- `.aster/modules.json` preserves module settings, tasks, projects, Canvas cards, PDF annotations, chart workbooks, Kanban boards, layouts and themes.
+- `.aster/vault.json` preserves note identities, graph views, accepted relationships and captured evidence.
+- `.aster/modules.json` preserves module settings, tasks, projects, Canvas cards, PDF annotations, chart workbooks, Kanban boards, resource pins, layouts and themes.
 - `Attachments/` holds imported PDFs. Their original bytes are not edited.
 - `.aster/history`, `.aster/module-history` and `.aster/trash` retain recovery data.
 
@@ -85,6 +89,7 @@ npm test
 npm run test:desktop
 npm run test:modules
 npm run test:visual
+npm run test:ecosystem
 npm run audit:publish
 ```
 

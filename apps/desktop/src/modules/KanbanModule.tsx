@@ -31,8 +31,11 @@ export default function KanbanModule({
   state,
   commit,
   onOpen,
+  resource,
 }: ModuleProps) {
-  const [boardId, setBoardId] = useState(""),
+  const [boardId, setBoardId] = useState(
+      resource?.kind === "kanban" ? resource.id : "",
+    ),
     [search, setSearch] = useState(""),
     [error, setError] = useState(""),
     [saving, setSaving] = useState(false);

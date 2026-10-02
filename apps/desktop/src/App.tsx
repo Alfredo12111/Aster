@@ -50,13 +50,19 @@ import {
   type VaultSettings,
   type VaultSnapshot,
 } from "../../../packages/core/types";
-import Graph, { arrange, colorFor } from "./Graph";
+import { arrange, colorFor } from "./Graph";
 import Editor from "./Editor";
 import ModuleHost from "./modules/ModuleHost";
 import ModuleProvider from "./modules/ModuleProvider";
 import Workspace, { type WorkspaceHandle } from "./Workspace";
 import type { WorkspaceTab } from "../../../packages/core/workspace";
 import ThemeSettings from "./ThemeSettings";
+import KnowledgeMap from "./KnowledgeMap";
+import ConnectionEvidence from "./ConnectionEvidence";
+import type { ModuleSnapshot } from "../../../packages/core/modules";
+import { resourceNotes, resourceEdges } from "../../../packages/core/resources";
+import ToolConnections from "./ToolConnections";
+import type { Evidence } from "../../../packages/core/evidence";
 import "./features.css";
 
 type Draft = { content: string; revision: string };
@@ -124,6 +130,7 @@ export default function App() {
     [key, setKey] = useState("");
   const [aiResults, setAiResults] = useState<Suggestion[] | null>(null),
     [aiBusy, setAiBusy] = useState(false);
+  const [evidenceId, setEvidenceId] = useState("");
   const [relationTarget, setRelationTarget] = useState(""),
     [relationType, setRelationType] = useState("relates to");
   const settingsPending = useRef(false),
@@ -133,6 +140,9 @@ export default function App() {
     currentVaultId = useRef("");
   const dialogRef = useRef<HTMLDialogElement>(null),
     searchRef = useRef<HTMLInputElement>(null);
+  const [moduleSnapshot, setModuleSnapshot] = useState<ModuleSnapshot | null>(
+    null,
+  );
   const workerRef = useRef<Worker | null>(null);
 
   const notify = (text: string) => {
@@ -406,10 +416,20 @@ export default function App() {
 
   const applyLayout = (layout: GraphView["layout"]) => {
     if (!vault || !view) return;
+    const moduleState =
+      moduleSnapshot?.vaultId === vault.id ? moduleSnapshot.state : null;
+    const mapNotes = [
+      ...vault.notes,
+      ...(moduleState ? resourceNotes(moduleState, vault.notes) : []),
+    ];
+    const mapEdges = [
+      ...buildEdges({ ...vault, notes: mapNotes }),
+      ...(moduleState ? resourceEdges(moduleState, vault.notes) : []),
+    ];
     workerRef.current?.terminate();
     setLayoutBusy(false);
     if (layout !== "force") {
-      updateView({ layout, positions: arrange(vault.notes, layout) });
+      updateView({ layout, positions: arrange(mapNotes, layout) });
       return;
     }
     setLayoutBusy(true);
@@ -433,10 +453,10 @@ export default function App() {
       setError("The graph could not be arranged. Try the clustered layout.");
       worker.terminate();
     };
-    const positions = arrange(vault.notes, "cluster");
+    const positions = arrange(mapNotes, "cluster");
     worker.postMessage({
-      nodes: vault.notes.map((n) => ({ id: n.id, ...positions[n.id] })),
-      edges: edges.map((e) => ({ source: e.source, target: e.target })),
+      nodes: mapNotes.map((n) => ({ id: n.id, ...positions[n.id] })),
+      edges: mapEdges.map((e) => ({ source: e.source, target: e.target })),
     });
   };
   const addRelation = (target: string, kind = relationType) => {
@@ -593,89 +613,39 @@ export default function App() {
     );
   };
   const renderSurface = (tab: WorkspaceTab): React.ReactNode => {
-    if (tab.kind === "graph")
-      return (
-        <section className="graph-panel">
-          <div className="graph-top">
-            <div>
-              <span className="eyebrow">YOUR KNOWLEDGE, CONNECTED</span>
-              <h1>
-                A wider perspective<span>.</span>
-              </h1>
-              <p>
-                {graphNotes.length} notes <span>·</span> {edges.length}{" "}
-                connections <span>·</span> {groups.length} neighborhoods
-              </p>
-            </div>
-            <button className="quiet-button" onClick={() => openModal("view")}>
-              <Plus size={14} />
-              Save view
-            </button>
-          </div>
-          <div className="graph-filter">
-            <Search size={14} />
-            <input
-              aria-label="Filter graph"
-              placeholder="Filter by idea, tag: or path:"
-              value={view?.filter ?? ""}
-              onChange={(e) => updateView({ filter: e.target.value })}
-            />
-            {view?.filter && (
-              <button
-                title="Clear graph filter"
-                onClick={() => updateView({ filter: "" })}
-              >
-                <X size={13} />
-              </button>
-            )}
-          </div>
-          {vault && settings && view && (
-            <Graph
-              notes={graphNotes}
-              edges={edges}
-              settings={settings}
-              view={view}
-              selected={selected}
-              groups={groups}
-              onSelect={(id) => {
-                setSelected(id);
-                workspaceRef.current?.followNote(id);
-              }}
-              onOpen={openNote}
-              onMove={(id, point) =>
-                updateView({
-                  positions: { ...view.positions, [id]: point },
-                })
-              }
-            />
-          )}
-          <div className="graph-legend">
-            {groups.map((g, i) => (
-              <button
-                key={g}
-                onClick={() =>
-                  updateView({
-                    filter: view?.filter === `path:${g}` ? "" : `path:${g}`,
-                  })
-                }
-              >
-                <span
-                  style={{
-                    background:
-                      settings?.colors[g] ?? PALETTE[i % PALETTE.length],
-                  }}
-                />
-                {g.replace(/^\d+\s*/, "")}
-              </button>
-            ))}
-          </div>
-        </section>
-      );
+    if (tab.kind === "graph" || tab.kind === "tree")
+      return vault && view ? (
+        <KnowledgeMap
+          vault={vault}
+          view={view}
+          selected={selected}
+          tree={tab.kind === "tree"}
+          onSelect={(id) => {
+            setSelected(id);
+            workspaceRef.current?.followNote(id);
+          }}
+          onOpen={openNote}
+          onOpenResource={(target) =>
+            workspaceRef.current?.openResource(target)
+          }
+          onEvidenceNote={(e) => {
+            setSelected(e.noteId);
+            workspaceRef.current?.openNote(e.noteId, e);
+          }}
+          onSwitch={(tree) =>
+            workspaceRef.current?.changeTab(tab.id, tree ? "tree" : "graph")
+          }
+          onSaveView={() => openModal("view")}
+          onSettings={updateSettings}
+          onView={updateView}
+        />
+      ) : null;
     if (tab.kind === "note") {
       const note = vault?.notes.find((n) => n.id === (tab.noteId ?? selected));
       return note ? (
         <Editor
           note={note}
+          passage={tab.passage}
           notes={vault!.notes}
           value={drafts[note.id]?.content ?? note.content}
           onChange={(text) => edit(note, text)}
@@ -703,6 +673,7 @@ export default function App() {
         onOpen={openNote}
         onVault={adopt}
         initialView={tab.kind}
+        initialResource={tab.resource}
         onViewChange={(kind) => workspaceRef.current?.changeTab(tab.id, kind)}
         initialTask={pendingTask?.tabId === tab.id ? pendingTask : null}
         onTaskHandled={() => setPendingTask(null)}
@@ -722,6 +693,7 @@ export default function App() {
   };
   return (
     <ModuleProvider
+      onSnapshot={setModuleSnapshot}
       key={vault?.id ?? "loading"}
       vaultId={vault?.id ?? ""}
       onFlush={registerModuleFlush}
@@ -1245,6 +1217,14 @@ export default function App() {
                             </button>
                             {e.origin === "manual" && (
                               <button
+                                title="Connection evidence"
+                                onClick={() => setEvidenceId(e.id)}
+                              >
+                                Evidence ({e.evidence?.length ?? 0})
+                              </button>
+                            )}
+                            {e.origin === "manual" && (
+                              <button
                                 title="Remove connection"
                                 onClick={() =>
                                   updateSettings({
@@ -1261,6 +1241,14 @@ export default function App() {
                         );
                       })}
                     </section>
+                    <ToolConnections
+                      vault={vault!}
+                      noteId={selected}
+                      onOpen={(target) =>
+                        workspaceRef.current?.openResource(target)
+                      }
+                      onEvidence={setEvidenceId}
+                    />
                     {note && (
                       <section className="control-section">
                         <span className="section-label">
@@ -1699,6 +1687,31 @@ export default function App() {
           </form>
         </dialog>
       </div>
+      {vault &&
+        evidenceId &&
+        vault.settings.relations.some((r) => r.id === evidenceId) && (
+          <ConnectionEvidence
+            relation={vault.settings.relations.find(
+              (r) => r.id === evidenceId,
+            )!}
+            vault={vault}
+            onClose={() => setEvidenceId("")}
+            onChange={(evidence) =>
+              updateSettings({
+                relations: vault.settings.relations.map((r) =>
+                  r.id === evidenceId ? { ...r, evidence } : r,
+                ),
+              })
+            }
+            onOpenNote={(e) => {
+              setSelected(e.noteId);
+              workspaceRef.current?.openNote(e.noteId, e);
+            }}
+            onOpenResource={(target) =>
+              workspaceRef.current?.openResource(target)
+            }
+          />
+        )}
     </ModuleProvider>
   );
 }

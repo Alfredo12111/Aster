@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from "react";
-import {useModules} from "./modules/ModuleProvider";
-import {themes} from "./themes";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { WorkspaceTab } from "../../../packages/core/workspace";
+import { useModules } from "./modules/ModuleProvider";
+import { themes } from "./themes";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { EditorView } from "@codemirror/view";
@@ -18,6 +19,7 @@ type Props = {
   onOpen(id: string): void;
   status: string;
   onCreateTask?(excerpt: string): void;
+  passage?: WorkspaceTab["passage"];
 };
 const editorTheme = EditorView.theme(
   {
@@ -45,7 +47,10 @@ const editorTheme = EditorView.theme(
     "&.cm-focused .cm-selectionBackground, .cm-selectionBackground": {
       background: "#e6bb7824",
     },
-    ".cm-tooltip": { background: "var(--side)", border: "1px solid var(--line)" },
+    ".cm-tooltip": {
+      background: "var(--side)",
+      border: "1px solid var(--line)",
+    },
   },
   {},
 );
@@ -57,11 +62,32 @@ export default function Editor({
   onOpen,
   status,
   onCreateTask,
+  passage,
 }: Props) {
-  const {snapshot}=useModules();
-  const light=themes[snapshot?.state.workspace.theme??"aster"].light;
+  const { snapshot } = useModules();
+  const light = themes[snapshot?.state.workspace.theme ?? "aster"].light;
   const [preview, setPreview] = useState(false);
   const editor = useRef<EditorView | null>(null);
+  const revealPassage = (view: EditorView) => {
+    if (!passage) return;
+    const text = view.state.doc.toString();
+    let start = passage.start;
+    if (text.slice(start, passage.end) !== passage.quote) {
+      start = text.indexOf(passage.quote);
+      if (start < 0 || text.indexOf(passage.quote, start + 1) >= 0) return;
+    }
+    view.dispatch({
+      selection: { anchor: start, head: start + passage.quote.length },
+      effects: EditorView.scrollIntoView(start, { y: "center" }),
+    });
+    view.focus();
+  };
+  useEffect(() => {
+    if (passage) {
+      setPreview(false);
+      if (editor.current) revealPassage(editor.current);
+    }
+  }, [passage]);
   const extensions = useMemo(
     () => [
       markdown(),
@@ -179,12 +205,13 @@ export default function Editor({
           <CodeMirror
             onCreateEditor={(view) => {
               editor.current = view;
+              revealPassage(view);
             }}
             key={note.id}
             value={value}
             extensions={extensions}
             onChange={onChange}
-            theme={light?"light":"dark"}
+            theme={light ? "light" : "dark"}
             basicSetup={{
               lineNumbers: false,
               foldGutter: false,

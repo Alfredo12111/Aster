@@ -6,7 +6,12 @@ import {
   MAX_ROWS,
   type Dataset,
 } from "./chart-model";
-import { evaluateWorkbook, parseDelimited } from "./chart-data";
+import {
+  evaluateWorkbook,
+  parseDelimited,
+  formulaFunctions,
+} from "./chart-data";
+import { renameReferences } from "./workbook-tools";
 export function checkXlsxArchive(bytes: Uint8Array) {
   if (bytes.byteLength > 10_000_000)
     throw new Error("Workbook imports are limited to 10 MB.");
@@ -102,10 +107,24 @@ export async function importWorkbook(
   } else throw new Error("Choose a UTF-8 CSV/TSV file or an XLSX workbook.");
   return datasetSchema.parse(result);
 }
-export async function exportWorkbook(dataset: Dataset): Promise<Uint8Array> {
+export async function exportWorkbook(
+  dataset: Dataset,
+  formulas = false,
+): Promise<Uint8Array> {
+  const allowedFunctions = new Set(formulaFunctions());
+  const safeFormula = (raw: string, value: unknown) =>
+    raw.startsWith("=") &&
+    !(typeof value === "string" && value.startsWith("#")) &&
+    !/[|\[\]]/.test(raw) &&
+    [
+      ...raw
+        .replace(/"(?:[^"]|"")*"/g, '""')
+        .matchAll(/\b([A-Z_][A-Z0-9_.]*)\s*\(/gi),
+    ].every((m) => allowedFunctions.has(m[1].toUpperCase()));
   const evaluated = evaluateWorkbook(dataset),
     book = new ExcelJS.Workbook();
   const names = new Set<string>();
+  const sheetNames = new Map<string, string>();
   for (const sheet of evaluated.sheets) {
     const base =
       sheet.name
@@ -119,10 +138,45 @@ export async function exportWorkbook(dataset: Dataset): Promise<Uint8Array> {
       name = base.slice(0, 31 - suffix.length) + suffix;
     }
     names.add(name.toLowerCase());
+    sheetNames.set(sheet.name.toLowerCase(), name);
+  }
+  for (let i = 0; i < evaluated.sheets.length; i++) {
+    const sheet = evaluated.sheets[i],
+      original = dataset.sheets[i],
+      name = sheetNames.get(sheet.name.toLowerCase())!;
     const target = book.addWorksheet(name);
-    sheet.rows.forEach((row) => target.addRow(row));
+    sheet.rows.forEach((row, r) =>
+      target.addRow(
+        row.map((value, c) => {
+          const raw = original.rows[r]?.[c] ?? "";
+          if (formulas && safeFormula(raw, value)) {
+            const formula = renameReferences(raw, sheetNames).slice(1);
+            const result =
+              typeof value === "string" && /^#[A-Z0-9/]+[!?]$/.test(value)
+                ? undefined
+                : (value ?? undefined);
+            return { formula, result };
+          }
+          return value;
+        }),
+      ),
+    );
+    for (const [column, format] of Object.entries(
+      original.columnFormats ?? {},
+    )) {
+      const numFmt = {
+        number: "#,##0.00",
+        percent: "0.00%",
+        currency: '"$"#,##0.00',
+        date: "yyyy-mm-dd",
+        text: "@",
+        general: "General",
+      }[format];
+      target.getColumn(Number(column) + 1).numFmt = numFmt;
+    }
     target.getRow(1).font = { bold: true };
     target.views = [{ state: "frozen", ySplit: 1 }];
   }
+  if (formulas) book.calcProperties.fullCalcOnLoad = true;
   return new Uint8Array((await book.xlsx.writeBuffer()) as ArrayBuffer);
 }

@@ -1,4 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  syncWorkbookCharts,
+  type ChartRestore,
+  type StructureEdit,
+} from "../../../../packages/core/workbook-charts";
+import ModuleDialog from "./ModuleDialog";
+import {
+  changeStructure,
+  fillRange,
+  renameSheet,
+  visibleRows,
+  formatCell,
+} from "../../../../packages/core/workbook-tools";
+import { statistics } from "../../../../packages/core/chart-math";
 import { Plus, Undo2, Redo2, BarChart3, Download, Eraser } from "lucide-react";
 import type { Dataset, CellValue } from "../../../../packages/core/chart-model";
 import {
@@ -11,9 +25,11 @@ import {
   columnName,
   parseDelimited,
   toCsv,
+  dataRange,
 } from "../../../../packages/core/chart-data";
 import { chartWorker, runChartWorker } from "./chart-worker";
 import { useModules, type Commit } from "./ModuleProvider";
+type History = { dataset: Dataset; charts: ChartRestore[] };
 type Position = { row: number; col: number };
 export default function DatasetEditor({
   dataset,
@@ -25,6 +41,18 @@ export default function DatasetEditor({
   onChart(sheet: string, range: string): void;
 }) {
   const { registerFlush } = useModules();
+  const [filter, setFilter] = useState(""),
+    [filterColumn, setFilterColumn] = useState("all"),
+    [operator, setOperator] = useState("contains"),
+    [sortColumn, setSortColumn] = useState(""),
+    [descending, setDescending] = useState(false),
+    [goto, setGoto] = useState("");
+  const [dialog, setDialog] = useState<
+      "rename-workbook" | "rename-sheet" | "delete-sheet" | null
+    >(null),
+    [name, setName] = useState("");
+  const root = useRef<HTMLDivElement>(null),
+    savePromise = useRef<Promise<void> | null>(null);
   const [sheetIndex, setSheetIndex] = useState(0),
     [page, setPage] = useState(0),
     [anchor, setAnchor] = useState<Position>({ row: 0, col: 0 }),
@@ -38,8 +66,8 @@ export default function DatasetEditor({
     editRef = useRef({ sheet: 0, row: 0, col: 0, value: "" }),
     latest = useRef(dataset);
   latest.current = dataset;
-  const [undo, setUndo] = useState<Dataset[]>([]),
-    [redo, setRedo] = useState<Dataset[]>([]),
+  const [undo, setUndo] = useState<History[]>([]),
+    [redo, setRedo] = useState<History[]>([]),
     dragging = useRef(false),
     [functions, setFunctions] = useState<string[]>([]),
     [help, setHelp] = useState(false);
@@ -47,6 +75,14 @@ export default function DatasetEditor({
     width = Math.max(2, ...sheet.rows.map((r) => r.length)),
     height = Math.max(2, sheet.rows.length),
     pageSize = 25;
+  useEffect(() => {
+    if (sheetIndex >= dataset.sheets.length) {
+      setSheetIndex(0);
+      setPage(0);
+      setAnchor({ row: 0, col: 0 });
+      setEnd({ row: 0, col: 0 });
+    }
+  }, [dataset.sheets.length, sheetIndex]);
   const from = {
       row: Math.min(anchor.row, end.row),
       col: Math.min(anchor.col, end.col),
@@ -61,6 +97,52 @@ export default function DatasetEditor({
     ":" +
     columnName(to.col) +
     (to.row + 1);
+  const viewRows = useMemo(
+    () =>
+      visibleRows(
+        calculated,
+        height,
+        filter,
+        filterColumn === "all" ? null : Number(filterColumn),
+        operator,
+        sortColumn === "" ? null : Number(sortColumn),
+        descending,
+      ),
+    [
+      calculated,
+      height,
+      filter,
+      filterColumn,
+      operator,
+      sortColumn,
+      descending,
+    ],
+  );
+  const transformed = !!filter || sortColumn !== "";
+  useEffect(
+    () => setPage(0),
+    [filter, filterColumn, operator, sortColumn, descending, sheetIndex],
+  );
+  useEffect(() => {
+    if (page * pageSize >= viewRows.length)
+      setPage(Math.max(0, Math.ceil(viewRows.length / pageSize) - 1));
+  }, [viewRows.length, page]);
+  const summary = useMemo(() => {
+    const values: CellValue[] = [];
+    for (let r = from.row; r <= to.row; r++)
+      for (let c = from.col; c <= to.col; c++)
+        values.push(calculated[r]?.[c] ?? null);
+    const numbers = values.filter(
+      (v): v is number => typeof v === "number" && Number.isFinite(v),
+    );
+    return {
+      filled: values.filter((v) => v !== null && v !== "").length,
+      errors: values.filter(
+        (v) => typeof v === "string" && /^#[A-Z0-9/]+[!?]$/.test(v),
+      ).length,
+      stats: statistics(numbers),
+    };
+  }, [calculated, range]);
   useEffect(() => {
     setError("");
     return chartWorker<{
@@ -75,7 +157,13 @@ export default function DatasetEditor({
       setError,
     );
   }, [dataset.id, dataset.updatedAt, sheetIndex]);
-  const apply = async (next: Dataset, remember = true) => {
+  const apply = async (
+    next: Dataset,
+    remember = true,
+    structure?: StructureEdit,
+    restore?: ChartRestore[],
+  ) => {
+    let charts: ChartRestore[] = [];
     const previous = structuredClone(latest.current),
       expected = previous.updatedAt;
     setBusy(true);
@@ -93,12 +181,20 @@ export default function DatasetEditor({
             "This workbook changed in another pane. Reopen it before editing.",
           );
         s.datasets[index] = parsed;
+        charts = syncWorkbookCharts(
+          s.charts,
+          previous,
+          parsed,
+          structure,
+          restore,
+        );
       });
       if (remember) {
-        setUndo((u) => [...u.slice(-9), previous]);
+        setUndo((u) => [...u.slice(-9), { dataset: previous, charts }]);
         setRedo([]);
       }
       latest.current = parsed;
+      return { dataset: previous, charts };
     } catch (e) {
       setError(String(e));
       throw e;
@@ -108,6 +204,7 @@ export default function DatasetEditor({
   };
   const flushRef = useRef<() => void>(() => {});
   const saveFormula = async () => {
+    if (savePromise.current) await savePromise.current;
     if (!editing.current) return;
     const edit = editRef.current;
     editing.current = false;
@@ -116,10 +213,29 @@ export default function DatasetEditor({
     while (rows.length <= edit.row) rows.push([]);
     while (rows[edit.row].length <= edit.col) rows[edit.row].push("");
     rows[edit.row][edit.col] = edit.value;
-    await apply(next).catch((error) => {
-      editing.current = true;
-      throw error;
-    });
+    const pending = apply(next)
+      .then(() => {})
+      .catch((error) => {
+        editing.current = true;
+        throw error;
+      });
+    savePromise.current = pending;
+    try {
+      await pending;
+    } finally {
+      savePromise.current = null;
+    }
+  };
+  const mutate = async (
+    fn: (d: Dataset) => Dataset,
+    structure?: StructureEdit,
+  ) => {
+    try {
+      await saveFormula();
+      await apply(fn(structuredClone(latest.current)), true, structure);
+    } catch (e) {
+      setError(String(e));
+    }
   };
   flushRef.current = () => {
     void saveFormula().catch(() => {});
@@ -150,11 +266,26 @@ export default function DatasetEditor({
       setFormula(sheet.rows[anchor.row]?.[anchor.col] ?? "");
   }, [sheet, anchor]);
   const select = (p: Position, extend = false) => {
+    if (extend && transformed) {
+      setError(
+        "Reset filters and sorting before selecting a range. Single-cell edits still update the original row.",
+      );
+      return;
+    }
     void saveFormula().catch(() => {});
     if (!extend) setAnchor(p);
     setEnd(p);
   };
-  const matrix = (values: string[][]) => {
+  const matrix = async (values: string[][]) => {
+    if (transformed && (values.length > 1 || from.row !== to.row)) {
+      setError("Reset the view before changing multiple rows.");
+      return;
+    }
+    try {
+      await saveFormula();
+    } catch {
+      return;
+    }
     const next = structuredClone(latest.current),
       rows = next.sheets[sheetIndex].rows;
     if (
@@ -174,27 +305,38 @@ export default function DatasetEditor({
     );
     void apply(next).catch(() => {});
   };
-  const exportData = async (format: "csv" | "xlsx") => {
+  const exportData = async (
+    format: "csv" | "xlsx",
+    formulas = false,
+    visible = false,
+  ) => {
     setBusy(true);
     try {
       await saveFormula();
-      if (format === "csv")
+      if (format === "csv") {
+        const result = await runChartWorker<{
+          sheets: { rows: CellValue[][] }[];
+        }>({ kind: "workbook", dataset: latest.current });
+        const rows = result.sheets[sheetIndex].rows;
+        const indexes = visibleRows(
+          rows,
+          height,
+          filter,
+          filterColumn === "all" ? null : Number(filterColumn),
+          operator,
+          sortColumn === "" ? null : Number(sortColumn),
+          descending,
+        );
         await window.aster.exportAsset({
           name: dataset.name + "-" + sheet.name,
           format,
-          data: toCsv(
-            (
-              await runChartWorker<{ sheets: { rows: CellValue[][] }[] }>({
-                kind: "workbook",
-                dataset: latest.current,
-              })
-            ).sheets[sheetIndex].rows,
-          ),
+          data: toCsv(visible ? indexes.map((i) => rows[i] ?? []) : rows),
         });
-      else {
+      } else {
         const bytes = await runChartWorker<Uint8Array>({
           kind: "export",
           dataset: latest.current,
+          formulas,
         });
         let binary = "";
         for (let i = 0; i < bytes.length; i += 8192)
@@ -212,9 +354,18 @@ export default function DatasetEditor({
     }
   };
   return (
-    <div className="dataset-editor">
+    <div className="dataset-editor" ref={root}>
       <div className="dataset-toolbar">
         <strong>{dataset.name}</strong>
+        <button
+          disabled={busy}
+          onClick={() => {
+            setDialog("rename-workbook");
+            setName(dataset.name);
+          }}
+        >
+          Rename workbook
+        </button>
         <select
           aria-label="Worksheet"
           value={sheetIndex}
@@ -233,10 +384,48 @@ export default function DatasetEditor({
           ))}
         </select>
         <button
+          disabled={busy}
+          onClick={() => {
+            setDialog("rename-sheet");
+            setName(sheet.name);
+          }}
+        >
+          Rename sheet
+        </button>
+        <button
+          disabled={busy || dataset.sheets.length >= 20}
+          onClick={() =>
+            void mutate((d) => {
+              let suffix = 2,
+                newName = sheet.name.slice(0, 25) + " copy";
+              while (d.sheets.some((s) => s.name === newName))
+                newName = sheet.name.slice(0, 23) + " copy " + suffix++;
+              d.sheets.push({
+                ...structuredClone(d.sheets[sheetIndex]),
+                name: newName,
+              });
+              return d;
+            })
+          }
+        >
+          Duplicate sheet
+        </button>
+        <button
+          disabled={busy || dataset.sheets.length === 1}
+          onClick={() => setDialog("delete-sheet")}
+        >
+          Delete sheet
+        </button>
+        <button
           title="Add worksheet"
           disabled={busy || dataset.sheets.length >= 20}
-          onClick={() => {
-            const next = structuredClone(dataset);
+          onClick={async () => {
+            try {
+              await saveFormula();
+            } catch {
+              return;
+            }
+            const next = structuredClone(latest.current);
             let n = next.sheets.length + 1;
             while (next.sheets.some((s) => s.name === "Sheet" + n)) n++;
             next.sheets.push({
@@ -261,9 +450,9 @@ export default function DatasetEditor({
           disabled={!undo.length || busy}
           onClick={() => {
             const previous = undo.at(-1)!;
-            void apply(previous, false)
-              .then(() => {
-                setRedo((r) => [...r, structuredClone(dataset)]);
+            void apply(previous.dataset, false, undefined, previous.charts)
+              .then((inverse) => {
+                setRedo((r) => [...r, inverse]);
                 setUndo((u) => u.slice(0, -1));
               })
               .catch(() => {});
@@ -276,9 +465,9 @@ export default function DatasetEditor({
           disabled={!redo.length || busy}
           onClick={() => {
             const next = redo.at(-1)!;
-            void apply(next, false)
-              .then(() => {
-                setUndo((u) => [...u, structuredClone(dataset)]);
+            void apply(next.dataset, false, undefined, next.charts)
+              .then((inverse) => {
+                setUndo((u) => [...u, inverse]);
                 setRedo((r) => r.slice(0, -1));
               })
               .catch(() => {});
@@ -293,6 +482,74 @@ export default function DatasetEditor({
         <button onClick={() => void exportData("xlsx")} disabled={busy}>
           Excel
         </button>
+        <button onClick={() => void exportData("xlsx", true)} disabled={busy}>
+          Excel with formulas
+        </button>
+      </div>
+      <div className="sheet-analysis-toolbar">
+        <label>
+          Filter column
+          <select
+            aria-label="Workbook filter column"
+            value={filterColumn}
+            onChange={(e) => setFilterColumn(e.target.value)}
+          >
+            <option value="all">All columns</option>
+            {Array.from({ length: width }, (_, c) => (
+              <option key={c} value={c}>
+                {columnName(c)} · {sheet.rows[0]?.[c] ?? ""}
+              </option>
+            ))}
+          </select>
+        </label>
+        <select
+          aria-label="Workbook filter operator"
+          value={operator}
+          onChange={(e) => setOperator(e.target.value)}
+        >
+          <option value="contains">Contains</option>
+          <option value="equals">Equals</option>
+          <option value="gt">Greater than</option>
+          <option value="lt">Less than</option>
+        </select>
+        <input
+          aria-label="Filter worksheet rows"
+          placeholder="Filter rows"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+        <label>
+          Sort
+          <select
+            aria-label="Sort worksheet by"
+            value={sortColumn}
+            onChange={(e) => setSortColumn(e.target.value)}
+          >
+            <option value="">Source order</option>
+            {Array.from({ length: width }, (_, c) => (
+              <option key={c} value={c}>
+                {columnName(c)} · {sheet.rows[0]?.[c] ?? ""}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button onClick={() => setDescending((v) => !v)}>
+          {descending ? "Descending" : "Ascending"}
+        </button>
+        <button
+          onClick={() => {
+            setFilter("");
+            setSortColumn("");
+          }}
+        >
+          Reset view
+        </button>
+        <button
+          disabled={busy}
+          onClick={() => void exportData("csv", false, true)}
+        >
+          Export visible CSV
+        </button>
       </div>
       <div className="formula-bar">
         <span>
@@ -302,6 +559,7 @@ export default function DatasetEditor({
         <b>ƒx</b>
         <input
           aria-label="Cell value or formula"
+          disabled={busy}
           value={formula}
           onFocus={() => {
             editRef.current = { sheet: sheetIndex, ...anchor, value: formula };
@@ -338,6 +596,75 @@ export default function DatasetEditor({
           }}
         >
           Functions
+        </button>
+      </div>
+      <div className="sheet-range-toolbar">
+        <input
+          aria-label="Select worksheet range"
+          placeholder="A1:D20"
+          value={goto}
+          onChange={(e) => setGoto(e.target.value)}
+        />
+        <button
+          onClick={() => {
+            try {
+              const bounds = dataRange(goto, height, width);
+              setFilter("");
+              setSortColumn("");
+              setAnchor(bounds.from);
+              setEnd(bounds.to);
+              setPage(Math.floor(bounds.from.row / pageSize));
+              setError("");
+            } catch (e) {
+              setError(String(e));
+            }
+          }}
+        >
+          Select range
+        </button>
+        <label>
+          Column format
+          <select
+            aria-label="Column format"
+            value={sheet.columnFormats?.[String(anchor.col)] ?? "general"}
+            disabled={busy}
+            onChange={(e) => {
+              const format = e.target.value as NonNullable<
+                typeof sheet.columnFormats
+              >[string];
+              void mutate((d) => {
+                const s = d.sheets[sheetIndex];
+                s.columnFormats ??= {};
+                for (let c = from.col; c <= to.col; c++)
+                  s.columnFormats[c] = format;
+                return d;
+              });
+            }}
+          >
+            {["general", "number", "percent", "currency", "date", "text"].map(
+              (f) => (
+                <option key={f} value={f}>
+                  {f === "currency" ? "Currency (USD)" : f}
+                </option>
+              ),
+            )}
+          </select>
+        </label>
+        <button
+          disabled={busy || transformed || from.row === to.row}
+          onClick={() =>
+            void mutate((d) => fillRange(d, sheetIndex, from, to, "down"))
+          }
+        >
+          Fill down
+        </button>
+        <button
+          disabled={busy || transformed || from.col === to.col}
+          onClick={() =>
+            void mutate((d) => fillRange(d, sheetIndex, from, to, "right"))
+          }
+        >
+          Fill right
         </button>
       </div>
       {help && (
@@ -385,29 +712,40 @@ export default function DatasetEditor({
           ) {
             e.preventDefault();
             const p = {
-              row: Math.max(
-                0,
-                Math.min(
-                  height - 1,
-                  end.row +
-                    (e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0),
-                ),
-              ),
+              row:
+                viewRows[
+                  Math.max(
+                    0,
+                    Math.min(
+                      viewRows.length - 1,
+                      Math.max(0, viewRows.indexOf(end.row)) +
+                        (e.key === "ArrowDown"
+                          ? 1
+                          : e.key === "ArrowUp"
+                            ? -1
+                            : 0),
+                    ),
+                  )
+                ] ?? 0,
               col: Math.max(
                 0,
                 Math.min(
                   width - 1,
                   end.col +
-                    (e.key === "ArrowRight" || e.key === "Tab"
-                      ? 1
-                      : e.key === "ArrowLeft"
-                        ? -1
-                        : 0),
+                    (e.key === "Tab" && e.shiftKey
+                      ? -1
+                      : e.key === "ArrowRight" || e.key === "Tab"
+                        ? 1
+                        : e.key === "ArrowLeft"
+                          ? -1
+                          : 0),
                 ),
               ),
             };
             select(p, e.shiftKey && e.key !== "Tab");
-            setPage(Math.floor(p.row / pageSize));
+            setPage(
+              Math.floor(Math.max(0, viewRows.indexOf(p.row)) / pageSize),
+            );
           }
           if (e.key === "Delete" || e.key === "Backspace") {
             e.preventDefault();
@@ -438,9 +776,9 @@ export default function DatasetEditor({
           </thead>
           <tbody>
             {Array.from(
-              { length: Math.min(pageSize, height - page * pageSize) },
+              { length: Math.min(pageSize, viewRows.length - page * pageSize) },
               (_, i) => {
-                const r = i + page * pageSize;
+                const r = viewRows[i + page * pageSize];
                 return (
                   <tr key={r}>
                     <th>{r + 1}</th>
@@ -469,7 +807,8 @@ export default function DatasetEditor({
                           )?.focus();
                         }}
                         onPointerEnter={() => {
-                          if (dragging.current) setEnd({ row: r, col: c });
+                          if (dragging.current && !transformed)
+                            setEnd({ row: r, col: c });
                         }}
                         onDoubleClick={() => {
                           const input = evaluateInput();
@@ -479,7 +818,12 @@ export default function DatasetEditor({
                         title={sheet.rows[r]?.[c] ?? ""}
                         aria-label={columnName(c) + (r + 1)}
                       >
-                        {String(calculated[r]?.[c] ?? sheet.rows[r]?.[c] ?? "")}
+                        {formatCell(
+                          calculated[r]?.[c] ?? sheet.rows[r]?.[c] ?? "",
+                          r === 0
+                            ? "general"
+                            : sheet.columnFormats?.[String(c)],
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -490,10 +834,43 @@ export default function DatasetEditor({
         </table>
       </div>
       <div className="sheet-actions">
+        {(["row", "column"] as const).flatMap((axis) =>
+          [false, true].map((remove) => (
+            <button
+              key={axis + remove}
+              disabled={busy || transformed}
+              onClick={() =>
+                void mutate(
+                  (d) =>
+                    changeStructure(
+                      d,
+                      sheetIndex,
+                      axis,
+                      axis === "row" ? anchor.row : anchor.col,
+                      remove,
+                    ),
+                  {
+                    sheet: sheet.name,
+                    axis,
+                    at: axis === "row" ? anchor.row : anchor.col,
+                    remove,
+                  },
+                )
+              }
+            >
+              {remove ? "Delete" : "Insert"} {axis}
+            </button>
+          )),
+        )}
         <button
           disabled={busy || height >= MAX_ROWS}
-          onClick={() => {
-            const next = structuredClone(dataset);
+          onClick={async () => {
+            try {
+              await saveFormula();
+            } catch {
+              return;
+            }
+            const next = structuredClone(latest.current);
             next.sheets[sheetIndex].rows.push(Array(width).fill(""));
             void apply(next).catch(() => {});
           }}
@@ -503,8 +880,13 @@ export default function DatasetEditor({
         </button>
         <button
           disabled={busy || width >= MAX_COLS}
-          onClick={() => {
-            const next = structuredClone(dataset);
+          onClick={async () => {
+            try {
+              await saveFormula();
+            } catch {
+              return;
+            }
+            const next = structuredClone(latest.current);
             next.sheets[sheetIndex].rows = Array.from(
               { length: height },
               (_, r) => [
@@ -537,10 +919,11 @@ export default function DatasetEditor({
         <span>{range}</span>
         <button
           className="primary"
-          disabled={from.row === to.row}
+          disabled={busy || transformed || from.row === to.row}
           onClick={() => {
-            void saveFormula().catch(() => {});
-            onChart(sheet.name, range);
+            void saveFormula()
+              .then(() => onChart(sheet.name, range))
+              .catch(() => {});
           }}
         >
           <BarChart3 size={14} />
@@ -552,11 +935,12 @@ export default function DatasetEditor({
           Previous rows
         </button>
         <span>
-          {page * pageSize + 1}–{Math.min(height, (page + 1) * pageSize)} of{" "}
-          {height}
+          {page * pageSize + 1}–
+          {Math.min(viewRows.length, (page + 1) * pageSize)} of{" "}
+          {viewRows.length} visible rows ({height} total)
         </span>
         <button
-          disabled={(page + 1) * pageSize >= height}
+          disabled={(page + 1) * pageSize >= viewRows.length}
           onClick={() => setPage((p) => p + 1)}
         >
           Next rows
@@ -566,6 +950,81 @@ export default function DatasetEditor({
           select a range.
         </small>
       </div>
+      <div className="sheet-summary">
+        Selection {range} · {summary.filled} filled · {summary.errors} errors
+        {summary.stats && (
+          <>
+            {" "}
+            · Sum {summary.stats.sum.toLocaleString()} · Mean{" "}
+            {summary.stats.mean?.toLocaleString()} · Min {summary.stats.min} ·
+            Max {summary.stats.max}
+          </>
+        )}
+        {transformed && (
+          <strong>
+            {" "}
+            · Sorted/filtered view keeps source row numbers. Reset view for
+            range operations.
+          </strong>
+        )}
+      </div>
+      {dialog && (
+        <ModuleDialog label="Workbook settings" onClose={() => setDialog(null)}>
+          <form
+            className="module-form"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await saveFormula();
+                let d = structuredClone(latest.current);
+                if (dialog === "rename-workbook") d.name = name;
+                else if (dialog === "rename-sheet")
+                  d = renameSheet(d, sheetIndex, name);
+                else d.sheets.splice(sheetIndex, 1);
+                await apply(d);
+                if (dialog === "delete-sheet") setSheetIndex(0);
+                setDialog(null);
+              } catch (e) {
+                setError(String(e));
+              }
+            }}
+          >
+            <h2>
+              {dialog === "rename-workbook"
+                ? "Rename workbook"
+                : dialog === "rename-sheet"
+                  ? "Rename worksheet"
+                  : "Delete worksheet?"}
+            </h2>
+            {dialog === "delete-sheet" ? (
+              <p>
+                Remove this worksheet. Formulas that refer to it will show
+                reference errors. You can undo this operation.
+              </p>
+            ) : (
+              <label>
+                Name
+                <input
+                  aria-label="Workbook item name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  maxLength={dialog === "rename-sheet" ? 31 : 160}
+                />
+              </label>
+            )}
+            {error && <p role="alert">{error}</p>}
+            <footer>
+              <button type="button" onClick={() => setDialog(null)}>
+                Cancel
+              </button>
+              <button className="primary" disabled={busy}>
+                {dialog === "delete-sheet" ? "Delete worksheet" : "Save name"}
+              </button>
+            </footer>
+          </form>
+        </ModuleDialog>
+      )}
       {warnings.length > 0 && (
         <details className="chart-warnings">
           <summary>{warnings.length} calculation messages</summary>
@@ -577,8 +1036,8 @@ export default function DatasetEditor({
     </div>
   );
   function evaluateInput() {
-    return document.querySelector(
-      ".dock-pane.focused [aria-label='Cell value or formula']",
+    return root.current?.querySelector(
+      "[aria-label='Cell value or formula']",
     ) as HTMLInputElement | null;
   }
 }

@@ -23,8 +23,11 @@ export default function CanvasModule({
   state,
   commit,
   onOpen,
+  resource,
 }: ModuleProps) {
-  const [boardId, setBoardId] = useState(state.boards[0]?.id ?? ""),
+  const [boardId, setBoardId] = useState(
+      resource?.kind === "canvas" ? resource.id : (state.boards[0]?.id ?? ""),
+    ),
     [editing, setEditing] = useState<QueryCard | null>(null),
     [boardName, setBoardName] = useState(""),
     [newBoard, setNewBoard] = useState(false),

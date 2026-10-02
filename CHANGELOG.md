@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 - 2026-10-02
+
+- Linked map nodes for existing workbooks, charts, Kanban, Canvas, projects, tasks, PDFs and Calendar, with native tool navigation, colors and source-derived relationships. Graph arrangements include tool nodes.
+- Separate visual Tree view with folder/parent-metadata modes, regular spacing, zoom, collapse and filtered ancestor context.
+- Manual connections can carry exact saved note passages and PDF annotation snapshots, jump to their source, and show changed/missing evidence for review.
+- Workbook filters/sorting, selection statistics, fill down/right, reference-aware row/column edits, sheet/workbook naming, sheet duplication/deletion, column number formats, visible CSV and formula XLSX exports. Chart source ranges and sheet names update with edits and undo.
+- Fixed formula-library stubs masking implemented statistical functions, including sample standard deviation.
+- 66 core tests and a fourth desktop suite cover connected research workflows, including persisted evidence and precise source navigation. Updated feature page, setup, architecture and remaining roadmap.
+
 ## 0.3.2 — 2026-10-02
 
 - All seven built-in modules are enabled by default in new vaults and when their saved switch is missing. Existing explicit switches remain respected, and users can still disable modules without deleting data.

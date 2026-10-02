@@ -22,15 +22,23 @@ import {
 import { useModules, TabContext } from "./modules/ModuleProvider";
 import ModuleDialog from "./modules/ModuleDialog";
 import { chartSchema } from "../../../packages/core/chart-model";
+import {
+  resourceSurface,
+  resourceCatalog,
+  resourceKey,
+  type ResourceTarget,
+} from "../../../packages/core/resources";
 export type WorkspaceHandle = {
   preset(mode: "graph" | "split" | "write" | "modules", noteId?: string): void;
-  openNote(id: string): void;
+  openNote(id: string, passage?: WorkspaceTab["passage"]): void;
+  openResource(target: ResourceTarget): void;
   followNote(id: string): void;
   openModule(kind: Surface): string;
   changeTab(id: string, kind: Surface): void;
 };
 const titles: Record<Surface, string> = {
   graph: "Web",
+  tree: "Tree",
   note: "Text",
   modules: "Modules",
   calendar: "Calendar",
@@ -83,6 +91,18 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
       })
       .catch((e) => setError(String(e)));
   };
+  const resourceTitles = new Map(
+    (store.snapshot ? resourceCatalog(store.snapshot.state) : []).map((r) => [
+      resourceKey(r.target),
+      r.title,
+    ]),
+  );
+  const tabTitle = (tab: WorkspaceTab) =>
+    tab.kind === "note" && tab.noteId
+      ? noteTitle(tab.noteId)
+      : tab.resource
+        ? (resourceTitles.get(resourceKey(tab.resource)) ?? titles[tab.kind])
+        : titles[tab.kind];
   const activate = (paneId: string, tab: WorkspaceTab) => {
     setActivePane(paneId);
     if (tab.kind === "note" && tab.noteId) onSelect(tab.noteId);
@@ -90,13 +110,14 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
       mapLayout(tree, paneId, (n) => ({ ...n, active: tab.id }) as Pane),
     );
   };
-  const openModule = (kind: Surface) => {
+  const openModule = (kind: Surface, resource?: ResourceTarget) => {
     const tree = latest.current,
       panes = leaves(tree),
       p = panes.find((p) => p.id === activePane) ?? panes[0],
       tab = {
         id: crypto.randomUUID(),
         kind,
+        ...(resource ? { resource } : {}),
         ...(kind === "note" && selected ? { noteId: selected } : {}),
       };
     mutate((tree) =>
@@ -114,7 +135,7 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
     );
     return tab.id;
   };
-  const openNote = (id: string) => {
+  const openNote = (id: string, passage?: WorkspaceTab["passage"]) => {
     const tree = latest.current,
       panes = leaves(tree),
       existing = panes.find((p) =>
@@ -125,6 +146,20 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
         existing.id,
         existing.tabs.find((t) => t.kind === "note" && t.noteId === id)!,
       );
+      if (passage)
+        mutate((tree) =>
+          mapLayout(
+            tree,
+            existing.id,
+            (n) =>
+              ({
+                ...n,
+                tabs: (n as Pane).tabs.map((t) =>
+                  t.kind === "note" && t.noteId === id ? { ...t, passage } : t,
+                ),
+              }) as Pane,
+          ),
+        );
       return;
     }
     const editor = panes.find((p) => p.tabs.some((t) => t.kind === "note"));
@@ -132,6 +167,7 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
       id: crypto.randomUUID(),
       kind: "note",
       noteId: id,
+      ...(passage ? { passage } : {}),
     };
     if (editor) {
       setActivePane(editor.id);
@@ -150,6 +186,7 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
       );
     } else if (panes.length < 8) {
       const pane = makePane("note", id);
+      if (passage) pane.tabs[0].passage = passage;
       setActivePane(pane.id);
       mutate((tree) => ({
         id: crypto.randomUUID(),
@@ -197,6 +234,9 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
     },
     openNote,
     openModule,
+    openResource(target) {
+      openModule(resourceSurface(target), target);
+    },
     changeTab(id, kind) {
       const pane = leaves(latest.current).find((p) =>
         p.tabs.some((t) => t.id === id),
@@ -210,7 +250,9 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
               ({
                 ...n,
                 tabs: (n as Pane).tabs.map((t) =>
-                  t.id === id ? { ...t, kind } : t,
+                  t.id === id
+                    ? { ...t, kind, resource: undefined, passage: undefined }
+                    : t,
                 ),
               }) as Pane,
           ),
@@ -240,11 +282,11 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
     const panes = leaves(current),
       kinds = panes.map((p) => p.tabs.find((t) => t.id === p.active)?.kind);
     onMode(
-      kinds.length === 1 && kinds[0] === "graph"
+      kinds.length === 1 && ["graph", "tree"].includes(kinds[0] ?? "")
         ? "graph"
         : kinds.length === 1 && kinds[0] === "note"
           ? "write"
-          : kinds.every((k) => !["graph", "note"].includes(k ?? ""))
+          : kinds.every((k) => !["graph", "tree", "note"].includes(k ?? ""))
             ? "modules"
             : "split",
     );
@@ -446,18 +488,10 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
                 aria-selected={tab.id === active.id}
                 onClick={() => activate(node.id, tab)}
               >
-                {tab.kind === "note" && tab.noteId
-                  ? noteTitle(tab.noteId)
-                  : titles[tab.kind]}
+                {tabTitle(tab)}
               </button>
               <button
-                title={
-                  "Close " +
-                  (tab.kind === "note" && tab.noteId
-                    ? noteTitle(tab.noteId)
-                    : titles[tab.kind]) +
-                  " tab"
-                }
+                title={"Close " + tabTitle(tab) + " tab"}
                 disabled={
                   node.tabs.length === 1 && leaves(current).length === 1
                 }

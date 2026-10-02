@@ -54,14 +54,19 @@ export default function ModuleProvider({
   vaultId,
   children,
   onFlush,
+  onSnapshot,
 }: {
   vaultId: string;
   children: ReactNode;
   onFlush?(flush: () => Promise<void>): void;
+  onSnapshot?(snapshot: ModuleSnapshot | null): void;
 }) {
   const [snapshot, setSnapshot] = useState<ModuleSnapshot | null>(null),
     [pending, setPending] = useState(0),
     [error, setError] = useState("");
+  useEffect(() => {
+    onSnapshot?.(snapshot);
+  }, [snapshot, onSnapshot]);
   const latest = useRef<ModuleSnapshot | null>(null),
     queue = useRef<Promise<unknown>>(Promise.resolve()),
     count = useRef(0),

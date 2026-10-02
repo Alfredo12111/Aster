@@ -1,16 +1,20 @@
 # Aster feature guide
 
-Aster 0.3 brings charts, connected Kanban, flexible workspaces, and themes together with Calendar, Tasks & Projects, PDF annotation, live Canvas queries, and metadata navigation. This guide describes shipped behavior. See [remaining roadmap](ADDON-ROADMAP.md) for future work.
+Aster 0.4 connects tools to the graph and a new visual tree, adds evidence-backed relationships, and expands workbook editing alongside charts, Kanban, flexible workspaces, and themes with Calendar, Tasks & Projects, PDF annotation, live Canvas queries, and metadata navigation. This guide describes shipped behavior. See [remaining roadmap](ADDON-ROADMAP.md) for future work.
 
 Open **Built-in modules** (the puzzle icon on the activity bar) to manage the tools for this vault. All seven switches start on for a new vault. Existing saved switches are respected; missing switches default to enabled. Disabling a module preserves its records. Creating a task from a note explicitly enables Tasks & Projects if needed. Everything here works locally without plugins, an account, an AI key, or a cloud service.
 
 ## Flexible workspaces
 
-Use **＋ View** to add Web, Text, Calendar, Tasks, Projects, PDF Annotation, Canvas, Navigator, Charts or Kanban to a pane. Split right or below, then drag the divider to change proportions. A divider supports arrow keys, Home, and double-click to return to 50/50. Drag tabs between panes or reorder them. Closing a pane's last tab collapses its split; one pane always remains.
+Use **＋ View** to add Web, Tree, Text, Calendar, Tasks, Projects, PDF Annotation, Canvas, Navigator, Charts or Kanban to a pane. Split right or below, then drag the divider to change proportions. A divider supports arrow keys, Home, and double-click to return to 50/50. Drag tabs between panes or reorder them. Closing a pane's last tab collapses its split; one pane always remains.
 
-Up to eight panes and twelve tabs per pane are supported. **Save layout** stores a named arrangement with tabs and proportions; the dropdown restores it. Manage up to twenty layouts in that dialog. The current layout persists on restart. Layouts save surfaces and note IDs, not temporary search, scroll position, or PDF page.
+Up to eight panes and twelve tabs per pane are supported. **Save layout** stores a named arrangement with tabs and proportions; the dropdown restores it. Manage up to twenty layouts in that dialog. The current layout persists on restart. Layouts save surfaces, note IDs, and tool targets opened from the map. Evidence links retain the requested annotation/page. Temporary searches, tree zoom/collapse/hierarchy choices, and manual PDF-page browsing are session state.
 
 All module panes share one write queue so edits use the latest successful revision. Chart calculations and query evaluation run in background workers.
+
+## Connected tools, tree and evidence
+
+The graph can include existing workbooks, charts, Kanban boards, Canvas boards, projects, tasks, PDFs and Calendar as linked tool nodes. Their native module remains the source of truth. The separate Tree view organizes notes and tools by folders or parent metadata with regular spacing and right-angle branches. Manual relationships can carry exact note passages and PDF annotation snapshots. See [Connected workspace](CONNECTED-WORKSPACE.md) for the controls, persistence and review rules.
 
 ## Themes
 
@@ -116,7 +120,7 @@ The per-document annotation panel lists all annotations in page order, with type
 
 Annotations store native PDF page coordinates, not screen pixels. Text and region marks use quadrilaterals; ink stores page-space points. PDF viewport transforms preserve their positions across zoom, crop boxes, rotation and reopen. Page numbers are one-based. The original PDF is not modified. A changed document fingerprint produces a visible error; import revised bytes as a new document to avoid applying old anchors to unrelated pages.
 
-Scanned PDFs support area comments and ink; text markup requires an existing text layer. OCR, password entry, annotation-object import from other PDF editors, and automatic reconciliation of replaced PDFs are not included. Editable sidecars are implemented; annotated PDF export is deferred as requested. PDF text/annotations are not yet included in the Markdown RAG export.
+Scanned PDFs support area comments and ink; text markup requires an existing text layer. OCR, password entry, annotation-object import from other PDF editors, and automatic reconciliation of replaced PDFs are not included. Editable sidecars are implemented; annotated PDF export is deferred as requested. Full PDF text and standalone annotation indexing are not included in Markdown RAG export. Captured annotation evidence on an exported note-to-note relationship is included with that relationship.
 
 ## Persistence and recovery
 
@@ -126,7 +130,7 @@ Vault/
   Attachments/source-<id>.pdf
   .aster/
     vault.json                 # note IDs, graph views and relationships
-    modules.json               # version 1: flags, calendar, tasks, projects, boards, documents/annotations, charts, datasets, Kanban, workspace
+    modules.json               # version 1: flags, calendar, tasks, projects, boards, documents/annotations, charts, datasets, Kanban, workspace, resource pins
     module-history/<hash>.json # previous module state before each write/import
 ```
 

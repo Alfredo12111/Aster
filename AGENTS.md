@@ -12,7 +12,7 @@
 
 1. Read the existing code and preserve unrelated changes.
 2. Implement the change and update README.md, relevant docs, and CHANGELOG.md.
-3. Run checks appropriate to the change. Application changes require the build and affected automated tests; release candidates also require all three packaged desktop suites.
+3. Run checks appropriate to the change. Application changes require the build and affected automated tests; release candidates also require all four packaged desktop suites.
 4. Run `npm run audit:publish`. Inspect the staged diff and filenames. Commit with a clear description and push to the configured remote branch. Use `codex/` for new feature branches; preserve the established main branch for routine owner-authorized updates.
 5. Report the commit, push result, validation, and any remaining limitation. If GitHub authentication or permissions block upload, preserve the local commit and ask for secure sign-in; never request a token in chat.
 6. For versioned releases, build a clean distribution, audit its app archive, zip the entire application directory, include setup instructions and checksums, and publish only the audited files. Keep generated binaries out of source control.

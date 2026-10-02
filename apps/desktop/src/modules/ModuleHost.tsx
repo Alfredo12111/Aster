@@ -24,6 +24,12 @@ import NavigatorModule from "./NavigatorModule";
 import "./modules.css";
 import { useModules } from "./ModuleProvider";
 import KanbanModule from "./KanbanModule";
+import {
+  resourceSurface,
+  resourceCatalog,
+  resourceKey,
+  type ResourceTarget,
+} from "../../../../packages/core/resources";
 const ChartsModule = lazy(() => import("./ChartsModule"));
 const PdfModule = lazy(() => import("./PdfModule"));
 export type Commit = (change: (state: ModuleState) => void) => Promise<void>;
@@ -32,6 +38,7 @@ export type ModuleProps = {
   state: ModuleState;
   commit: Commit;
   onOpen(id: string): void;
+  resource?: ResourceTarget;
 };
 const info = {
   charts: {
@@ -80,6 +87,7 @@ type Props = {
   initialView?: ModuleName | "modules" | "projects";
   onViewChange?(view: ModuleName | "modules" | "projects"): void;
   initialTask?: { noteId: string; excerpt: string } | null;
+  initialResource?: ResourceTarget;
   onTaskHandled(): void;
 };
 export default function ModuleHost({
@@ -87,6 +95,7 @@ export default function ModuleHost({
   onOpen,
   onVault,
   initialTask,
+  initialResource,
   initialView = "modules",
   onViewChange,
   onTaskHandled,
@@ -127,7 +136,30 @@ export default function ModuleHost({
     }
   }, [initialTask, snapshot]);
   const state = snapshot?.state;
-  const shared = state ? { vault, state, commit, onOpen } : null;
+  const resourceEnabled = useRef(false);
+  useEffect(() => {
+    if (initialResource && snapshot && !resourceEnabled.current) {
+      resourceEnabled.current = true;
+      const surface = resourceSurface(initialResource),
+        name = surface === "projects" ? "tasks" : surface;
+      if (!snapshot.state.enabled[name])
+        void commit((s) => {
+          s.enabled[name] = true;
+        }).catch(() => {
+          resourceEnabled.current = false;
+        });
+    }
+  }, [initialResource, snapshot]);
+  const missingResource = !!(
+    initialResource &&
+    state &&
+    !resourceCatalog(state).some(
+      (r) => resourceKey(r.target) === resourceKey(initialResource),
+    )
+  );
+  const shared = state
+    ? { vault, state, commit, onOpen, resource: initialResource }
+    : null;
   return (
     <section className="module-workspace">
       <nav className="module-nav" aria-label="Built-in modules">
@@ -190,6 +222,14 @@ export default function ModuleHost({
       )}
       {!state ? (
         <div className="module-loading">Loading vault modules…</div>
+      ) : missingResource ? (
+        <div className="module-error" role="alert">
+          This linked item no longer exists. Restore its source data or choose
+          another item from its module.
+          <button onClick={() => setActive("modules")}>
+            Choose another tool
+          </button>
+        </div>
       ) : active === "modules" || !state.enabled[active] ? (
         <div className="modules-home">
           <span className="eyebrow">BUILT IN. YOUR CHOICE.</span>

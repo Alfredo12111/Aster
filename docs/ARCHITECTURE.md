@@ -138,3 +138,11 @@ A single React module provider serializes mutations across panes and checks the 
 Chart calculations run in disposable workers. Source adapters normalize Aster queries, Markdown tables and imported worksheets. The mathematical core handles aggregation, Welford sample variance, compensated sums, inclusive quantiles, histograms, Tukey boxes, Gaussian density estimates, Pearson correlation, trailing averages and centered/scaled QR regressions. ECharts renders charts; ExcelJS handles bounded XLSX imports and calculated-value exports. Formula libraries use parsed expressions with bounded reference depth/count and worker lifetime. Native exports validate format and use a user-selected save path.
 
 These collections still share the revisioned module JSON file and history snapshots. A large user base does not imply a deployed service: the existing SQLite/index and optional sync designs remain future infrastructure. Imported workbooks are local snapshots; there is no external workbook synchronization.
+
+## Connected workspace (0.4)
+
+Resource pins store a stable node UUID plus a typed reference to an existing module record. Catalog adapters supply current titles and virtual map paths; graph/tree nodes never duplicate editable workbook, task, PDF or board data. Source-derived edges describe actual chart inputs, project membership and task origins. Manual relationships remain in vault settings and use the same pin identities. Missing resources stay visible rather than silently retargeting links.
+
+Connection evidence stores immutable quote snapshots plus source identity, note revision/span or PDF fingerprint/annotation version/page. Review compares the current saved record; opening PDFs independently checks their bytes. This is provenance capture, not proof that a claim is true. Full document extraction and retrieval-time freshness evaluation remain future work.
+
+The visual tree reuses the cycle-safe folder/metadata hierarchy and an iterative layout with a bounded 600-card viewport result. Source rows remain fixed during worksheet filtering/sorting. Structural workbook operations repair A1 formulas and chart sources in one serialized module transaction; undo patches guard against overwriting later chart-source changes. Formula XLSX export permits known functions and blocks external references.

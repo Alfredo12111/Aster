@@ -36,9 +36,16 @@ export default function TasksModule({
   projectView,
   initialTask,
   onTaskHandled,
+  resource,
 }: Props) {
-  const [editing, setEditing] = useState<Task | null>(null),
-    [project, setProject] = useState(""),
+  const [editing, setEditing] = useState<Task | null>(
+      resource?.kind === "task"
+        ? (state.tasks.find((t) => t.id === resource.id) ?? null)
+        : null,
+    ),
+    [project, setProject] = useState(
+      resource?.kind === "project" ? resource.id : "",
+    ),
     [status, setStatus] = useState("open"),
     [priority, setPriority] = useState("all"),
     [due, setDue] = useState("all"),

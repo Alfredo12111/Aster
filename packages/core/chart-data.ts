@@ -169,10 +169,17 @@ function flatFunctions(
   return output;
 }
 const additions = flatFunctions(formulas);
+const isStub = (fn: unknown) =>
+  typeof fn === "function" &&
+  /^(?:\([^)]*\)\s*=>|function\s*\w*\([^)]*\))\s*\{\s*\}$/.test(
+    String(fn).trim(),
+  );
 export function formulaFunctions(): string[] {
   return [
     ...new Set([
-      ...Object.keys(new FormulaParser().functions),
+      ...Object.entries(new FormulaParser().functions)
+        .filter(([, fn]) => !isStub(fn))
+        .map(([name]) => name),
       ...Object.keys(additions),
     ]),
   ]
@@ -244,7 +251,10 @@ export function evaluateWorkbook(dataset: Dataset): {
             ? arg.value
             : arg;
         for (const [name, fn] of Object.entries(additions))
-          if (!Object.hasOwn(base.functions, name))
+          if (
+            !Object.hasOwn(base.functions, name) ||
+            isStub(base.functions[name])
+          )
             extra[name] = (...args: any[]) => {
               const values = args.map(unwrap),
                 invalid = values.flat(Infinity).find((v) => v instanceof Error);

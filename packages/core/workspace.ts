@@ -1,7 +1,9 @@
 import { z } from "zod";
+import { resourceTargetSchema, type ResourceTarget } from "./resources";
 
 export const surfaceNames = [
   "graph",
+  "tree",
   "note",
   "modules",
   "calendar",
@@ -23,7 +25,13 @@ export const themeNames = [
   "rose",
 ] as const;
 export type ThemeName = (typeof themeNames)[number];
-export type WorkspaceTab = { id: string; kind: Surface; noteId?: string };
+export type WorkspaceTab = {
+  id: string;
+  kind: Surface;
+  noteId?: string;
+  resource?: ResourceTarget;
+  passage?: { start: number; end: number; quote: string; revision: string };
+};
 export type Pane = {
   id: string;
   type: "pane";
@@ -43,6 +51,15 @@ const tabSchema = z.object({
   id: z.string().uuid(),
   kind: z.enum(surfaceNames),
   noteId: z.string().uuid().optional(),
+  resource: resourceTargetSchema.optional(),
+  passage: z
+    .object({
+      start: z.number().int().min(0),
+      end: z.number().int().positive(),
+      quote: z.string().max(10000),
+      revision: z.string().max(100),
+    })
+    .optional(),
 });
 const paneSchema = z
   .object({

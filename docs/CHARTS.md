@@ -32,7 +32,7 @@ Valid settings autosave after a short pause; **Save chart** saves immediately. C
 
 ## Worksheet editing
 
-Select a cell and edit its raw value or formula in the **ƒx** bar; Enter or leaving the field saves it. Double-click a cell or press F2 to focus that bar. Arrow keys and Tab move selection. Shift-click or drag selects a range. Paste tab-separated or CSV data into the grid, clear a range, append rows/columns, and add worksheets. Undo/redo retains the last ten workbook edits in the current editor session.
+Select a cell and edit its raw value or formula in the **ƒx** bar; Enter or leaving the field saves it. Double-click a cell or press F2 to focus that bar. Arrow keys and Tab move selection. Shift-click or drag selects a range. Paste tab-separated or CSV data into the grid, clear a range, append or insert/delete rows and columns, and add worksheets. Rename workbooks and worksheets, duplicate a sheet, or delete a sheet not used by a chart. Undo/redo retains the last ten workbook edits in the current editor session.
 
 **Chart selection** uses the first selected row as headers. Worksheets page through 25 rows at a time. The grid shows calculated values; the formula bar shows the saved expression.
 
@@ -46,9 +46,18 @@ Select a cell and edit its raw value or formula in the **ƒx** bar; Enter or lea
 =NPV(0.1,100,100)
 ~~~~
 
-The **Functions** button lists registered functions. The engine combines fast-formula-parser and FormulaJS for arithmetic, references, logical, lookup, date, statistical, engineering and financial functions. This is not complete Excel compatibility: unsupported syntax/functions produce an error; edge cases have not all been conformance-tested. Named ranges, structured table references, external workbook links, spill arrays, macros and workbook formatting are not supported. Prefix text with an apostrophe to retain a literal value.
+The **Functions** button lists registered functions. The engine combines fast-formula-parser and FormulaJS for arithmetic, references, logical, lookup, date, statistical, engineering and financial functions. This is not complete Excel compatibility: unsupported syntax/functions produce an error; edge cases have not all been conformance-tested. Named ranges, structured table references, external workbook links, spill arrays, macros and arbitrary workbook formatting are not supported. Prefix text with an apostrophe to retain a literal value.
 
 Dependent cells recalculate across worksheets. Cycles, division by zero and invalid references produce cell errors. Formulas run in a disposable worker with bounded reference counts, depth and execution time; external/network function calls are blocked.
+
+## Research and analysis controls
+
+- Filter calculated values across all columns or one column using contains, equals, greater than or less than. Sort one column in either direction. The first row stays the header. These are view operations: original row addresses and formula references stay fixed. Single-cell edits still write to their source row; reset the view before multirow changes or range-based charts. **Export visible CSV** exports the current filtered/sorted view.
+- Enter **A1:D20** in the range box. The selection summary reports filled cells, errors, sum, mean, minimum and maximum. **Fill down/right** copies from the first selected row/column and shifts relative A1 references while preserving dollar anchors.
+- Inserting/deleting rows or columns repairs bounded A1 formulas, including cross-sheet references. Linked chart ranges change in the same save. A chart's header row or entire source cannot be removed without first changing that chart. Whole-row/whole-column formula references must be converted to bounded ranges before structural edits.
+- Renaming a worksheet repairs qualified formula references and linked chart sources. Undo/redo restores workbook data and affected chart references together. If another pane changed a chart source, a conflicting undo is rejected.
+- Column display formats include general, number, percent, USD currency, Excel-serial date, and text. Formatting does not change stored values; prefix a literal value with an apostrophe. These are column formats, not a full cell styling system.
+- Workbooks and charts can be pinned to the knowledge map. A pinned chart automatically connects to its pinned source workbook or Markdown note. Open the same item from a map node to edit it.
 
 ## Mathematical conventions
 
@@ -61,7 +70,7 @@ Dependent cells recalculate across worksheets. Cycles, division by zero and inva
 
 ## Export and limits
 
-Charts export **PNG**, **SVG**, and their source **Data CSV** through a native save dialog. Worksheet exports support CSV and XLSX calculated values. XLSX export does not preserve formulas, formatting, macros, source chart objects or links. CSV export prefixes potentially executable text with an apostrophe; numeric negative values remain numbers.
+Charts export **PNG**, **SVG**, and their source **Data CSV** through a native save dialog. **Excel** exports calculated values; **Excel with formulas** exports supported formulas with cached values and requests recalculation on open. Supported column number formats are exported. Unsupported/error/external formulas export their calculated text rather than executable formulas. Formatting import is not a round trip: original cell styles, merged cells, pivot tables, macros, source chart objects and workbook links are not preserved. CSV export prefixes potentially executable text with an apostrophe; numeric negative values remain numbers.
 
 Limits: 10 MB per import, 50 MB declared expanded XLSX data, 20 sheets per workbook, 10,000 rows and 100 columns per sheet, 100,000 cells per workbook, 4,000 characters per stored cell, 12 selected value series, 100 groups and 10,000 categorical heatmap intersections. Charts and datasets live in the vault's revisioned module sidecar, currently limited to 50 MB. These are protective ceilings, not measured performance guarantees.
 

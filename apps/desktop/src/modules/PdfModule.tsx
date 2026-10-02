@@ -44,8 +44,11 @@ export default function PdfModule({
   state,
   commit,
   onImport,
+  resource,
 }: ModuleProps & { onImport(): Promise<void> }) {
-  const [docId, setDocId] = useState(state.documents[0]?.id ?? ""),
+  const [docId, setDocId] = useState(
+      resource?.kind === "pdf" ? resource.id : (state.documents[0]?.id ?? ""),
+    ),
     [pdf, setPdf] = useState<PDFDocumentProxy | null>(null),
     [page, setPage] = useState(1),
     [scale, setScale] = useState(1),
@@ -107,8 +110,17 @@ export default function PdfModule({
           useWorkerFetch: false,
         });
         const loaded = await loading.promise;
-        if (!cancelled) setPdf(loaded);
-        else await loading.destroy();
+        if (!cancelled) {
+          if (resource?.kind === "pdf" && resource.id === doc.id) {
+            const a = doc.annotations.find(
+              (a) => a.id === resource.annotationId,
+            );
+            setPage(Math.min(loaded.numPages, a?.page ?? resource.page ?? 1));
+            setSelected(a?.id ?? "");
+            selectedRef.current = a?.id ?? "";
+          }
+          setPdf(loaded);
+        } else await loading.destroy();
       })
       .catch((e) => {
         if (!cancelled) setError(String(e));

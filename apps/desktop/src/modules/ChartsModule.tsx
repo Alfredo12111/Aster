@@ -54,17 +54,21 @@ export default function ChartsModule({
   state,
   commit,
   onOpen,
+  resource,
 }: ModuleProps) {
   const { registerFlush } = useModules();
   const [selected, setSelected] = useTabState(
       "chart-selected",
-      state.charts[0]?.id ?? "",
+      resource?.kind === "chart" ? resource.id : (state.charts[0]?.id ?? ""),
     ),
     [draft, setDraft] = useTabState<ChartDefinition | null>(
       "chart-draft",
       null,
     ),
-    [datasetId, setDatasetId] = useTabState("chart-dataset", "");
+    [datasetId, setDatasetId] = useTabState(
+      "chart-dataset",
+      resource?.kind === "dataset" ? resource.id : "",
+    );
   const [baseline, setBaseline] = useTabState<string | null>(
     "chart-baseline",
     null,
@@ -132,7 +136,7 @@ export default function ChartsModule({
             !valid.length ||
             valid.length !== chart.ys.length
           ) {
-            if(!draft)setBaseline(saved?JSON.stringify(saved):null);
+            if (!draft) setBaseline(saved ? JSON.stringify(saved) : null);
             setDraft((current) => {
               const base = current ?? chart;
               if (

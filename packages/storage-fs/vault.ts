@@ -12,6 +12,7 @@ import {
 } from "../core/types";
 import { SAMPLE_NOTES } from "../core/sample";
 import { metadataTags, readMetadata } from "../core/metadata";
+import { evidenceSchema } from "../core/evidence";
 import {
   dateSchema,
   emptyModuleState,
@@ -45,6 +46,7 @@ export const settingsSchema = z.object({
         source: id,
         target: id,
         kind: z.string().trim().min(1).max(60),
+        evidence: z.array(evidenceSchema).max(100).optional(),
       }),
     )
     .max(100000),

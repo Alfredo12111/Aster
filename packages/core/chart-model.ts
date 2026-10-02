@@ -22,6 +22,12 @@ export const sheetSchema = z
   .object({
     name: z.string().trim().min(1).max(80),
     rows: z.array(z.array(z.string().max(4000)).max(MAX_COLS)).max(MAX_ROWS),
+    columnFormats: z
+      .record(
+        z.string().regex(/^\d{1,2}$/),
+        z.enum(["general", "number", "percent", "currency", "date", "text"]),
+      )
+      .optional(),
   })
   .refine(
     (s) => s.rows.reduce((n, row) => n + row.length, 0) <= MAX_CELLS,

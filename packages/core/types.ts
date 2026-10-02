@@ -1,4 +1,5 @@
 import type { ModuleSnapshot, ModuleState } from "./modules";
+import type { Evidence } from "./evidence";
 export type Note = {
   id: string;
   path: string;
@@ -16,8 +17,11 @@ export type Relation = {
   source: string;
   target: string;
   kind: string;
+  evidence?: Evidence[];
 };
-export type GraphEdge = Relation & { origin: "wikilink" | "manual" };
+export type GraphEdge = Relation & {
+  origin: "wikilink" | "manual" | "resource";
+};
 export type GraphView = {
   id: string;
   name: string;
