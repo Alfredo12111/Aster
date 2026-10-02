@@ -117,11 +117,13 @@ const Workspace = forwardRef<WorkspaceHandle, Props>(function Workspace(
   const openNote = (id: string) => {
     const tree = latest.current,
       panes = leaves(tree),
-      existing = panes.find((p) => p.tabs.some((t) => t.noteId === id));
+      existing = panes.find((p) =>
+        p.tabs.some((t) => t.kind === "note" && t.noteId === id),
+      );
     if (existing) {
       activate(
         existing.id,
-        existing.tabs.find((t) => t.noteId === id)!,
+        existing.tabs.find((t) => t.kind === "note" && t.noteId === id)!,
       );
       return;
     }

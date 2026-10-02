@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 — 2026-10-02
+
+- Fixed reopening a selected note after switching to Graph or restoring a graph-only layout. Graph/module tabs no longer masquerade as note editors, including previously saved layouts.
+- Added a core identity test and desktop regression for both new and legacy presets. All 56 source tests and three packaged suites cover the release.
+
 ## 0.3.0 — 2026-10-02
 
 - Built-in Charts: thirteen chart types; live Aster Query and Markdown tables; CSV/TSV/XLSX import; selected ranges and editable worksheets.

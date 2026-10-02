@@ -10,7 +10,7 @@
 The current Windows x64 build is unsigned. Windows may show a reputation warning. Check that the download comes from the repository linked above and compare its SHA-256 checksum with the release's `SHA256SUMS.txt` before deciding to run it:
 
 ```powershell
-Get-FileHash .\Aster-0.3.0-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\Aster-0.3.1-windows-x64.zip -Algorithm SHA256
 ```
 
 This directory build does not install a Windows service or require Node.js. You may move the extracted app folder later. Your notes and app settings are stored separately from that folder; this is not a fully portable user profile.

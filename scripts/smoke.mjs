@@ -35,6 +35,20 @@ try {
   await page.getByRole('button',{name:'Read formatted note',exact:true}).click();
   await expect(page.locator('.markdown-preview')).toContainText('A durable note');
   await page.getByRole('button',{name:'Graph',exact:true}).click();
+  await expect(page.locator('.dock-pane')).toHaveCount(1);
+  await page.locator('.tree-note').filter({hasText:'Smoke note'}).click();
+  await expect(page.locator('.note-heading h2')).toHaveText('Smoke note');
+  await page.getByRole('button',{name:'Graph',exact:true}).click();
+  await expect(page.locator('.dock-pane')).toHaveCount(1);
+  // A pre-fix saved graph tab may contain a noteId; it must never count as an editor.
+  await page.evaluate(async id=>{const m=await window.aster.loadModules();m.state.workspace.layout.tabs[0].noteId=id;await window.aster.saveModules({vaultId:m.vaultId,revision:m.revision,state:m.state});},created.id);
+  await page.keyboard.press('Control+s');
+  await expect.poll(()=>page.evaluate(()=>!window.dispatchEvent(new Event('beforeunload',{cancelable:true})))).toBe(false);
+  await page.reload();await expect(page.locator('.tree-note')).toHaveCount(18);
+  await page.locator('.tree-note').filter({hasText:'Smoke note'}).click();
+  await expect(page.locator('.note-heading h2')).toHaveText('Smoke note');
+  await page.getByRole('button',{name:'Graph',exact:true}).click();
+  await expect(page.locator('.dock-pane')).toHaveCount(1);
   await page.getByRole('button',{name:'Appearance',exact:true}).click();
   await page.getByRole('button',{name:'Save view',exact:true}).click();
   await page.getByLabel('View name',{exact:true}).fill('Retrieval map');

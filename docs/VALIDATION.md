@@ -1,11 +1,11 @@
 # Validation record
 
-Aster 0.3.0, tested 1 October 2026 on the development Windows host with Node.js 24.19.0.
+Aster 0.3.1, tested 2 October 2026 on the development Windows host with Node.js 24.19.0.
 
 ## Completed
 
 - TypeScript typecheck and production renderer/main/preload build.
-- 55 automated tests across ten source files. The original core/storage/provider-mock/protocol coverage includes: wiki link resolution and ambiguity, code exclusion, typed relationships, local suggestions, RAG span coverage and stable IDs, native save/reopen/history, stale/concurrent write rejection, unsafe paths/junctions, move collision and trash, corrupt manifest preservation, provider key boundary and response validation, cross-vault sync batches.
+- 56 automated tests across ten source files. The original core/storage/provider-mock/protocol coverage includes: wiki link resolution and ambiguity, code exclusion, typed relationships, local suggestions, RAG span coverage and stable IDs, native save/reopen/history, stale/concurrent write rejection, unsafe paths/junctions, move collision and trash, corrupt manifest preservation, provider key boundary and response validation, cross-vault sync batches.
 - An isolated session of the packaged Windows executable verifies startup, nested note creation, editing/autosave to an actual Markdown file, wiki links, typed relationships, formatted preview, saved views, filtering, background layout, masked key field, persistence reload, drag-position persistence, external edit conflict recovery, and sandbox/context isolation.
 - Added core/storage tests cover bounded YAML and typed metadata, date-only arithmetic across leap days/year/DST boundaries, Aster Query filtering/sorting/limits and rejected syntax, hierarchy cycles/missing parents, a 10,000-note chain, idempotent daily notes, module round-trip and disabling, stale module writes, duplicate IDs, path normalization/traversal rejection, PDF deduplication, source-fingerprint mismatch, annotation geometry validation and corrupt-sidecar preservation.
 - The module desktop suite passes against the actual packaged executable. It exercises all three calendar views; daily-note creation; task creation from notes with status/priority/due/project; project-related notes; live Canvas queries with external Markdown changes; additional-filter preservation in the builder; saved card movement/resizing; metadata filters and ancestor context; all five PDF tools; comment editing/deletion/search; undo/redo; annotation navigation; zoom/rotation; and module disable/re-enable.
@@ -16,7 +16,7 @@ Aster 0.3.0, tested 1 October 2026 on the development Windows host with Node.js 
 
 ## New visual workspace coverage
 
-All three desktop suites passed locally against the packaged 0.3.0 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
+All three desktop suites passed locally against the packaged 0.3.1 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
 
 Core tests additionally check finite chart options, invalid OHLC, category aggregation, calendar duplicates/invalid dates, exact category trend predictions, polynomial/exponential fits, PMT/NPV/FV, formula errors/cycles, CSV escaping, XLSX round trips/archive limits, old-sidecar defaults, Kanban ordering, and nested pane identity/collapse rules. Test discovery is limited to tests/; ignored local audit copies are not counted.
 

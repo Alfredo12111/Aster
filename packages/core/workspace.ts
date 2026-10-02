@@ -110,7 +110,7 @@ export function makePane(kind: Surface, noteId?: string): Pane {
   const tab: WorkspaceTab = {
     id: crypto.randomUUID(),
     kind,
-    ...(noteId ? { noteId } : {}),
+    ...(kind === "note" && noteId ? { noteId } : {}),
   };
   return { id: crypto.randomUUID(), type: "pane", tabs: [tab], active: tab.id };
 }

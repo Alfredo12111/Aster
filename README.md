@@ -76,7 +76,7 @@ Read the [charts and formulas guide](docs/CHARTS.md), [workspace controls](docs/
 
 ### Download the Windows app
 
-1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.3.0-windows-x64.zip**.
+1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.3.1-windows-x64.zip**.
 2. **Extract the entire ZIP** to a normal folder.
 3. Open **Aster.exe** inside it. Keep the accompanying files beside the executable.
 4. Explore the welcome vault, or choose **New vault** / **Open** for your own notes.
@@ -143,7 +143,7 @@ The working modules above are implemented and tested. Charting includes all requ
 
 Current protective limits are 20,000 Markdown notes, 2 MB per note, 100 MB of total note text, and 100 MB per PDF. These are limits, not performance promises. The app still loads full note snapshots. The metadata navigator is virtualized; the original file explorer is not.
 
-The validation record covers **55 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
+The validation record covers **56 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
 
 ## Build with us
 

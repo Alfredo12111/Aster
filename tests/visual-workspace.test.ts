@@ -42,6 +42,12 @@ it("migrates older module sidecars without changing their data", () => {
   expect(parsed.workspace.theme).toBe("aster");
   expect(parsed.enabled.kanban).toBe(false);
 });
+it("only gives text tabs a note identity when creating workspace presets", () => {
+  const noteId = crypto.randomUUID();
+  expect(makePane("note", noteId).tabs[0].noteId).toBe(noteId);
+  expect(makePane("graph", noteId).tabs[0].noteId).toBeUndefined();
+  expect(makePane("modules", noteId).tabs[0].noteId).toBeUndefined();
+});
 it("moves tabs between nested panes, collapses empty panes and preserves tab identities", () => {
   const a = makePane("graph"),
     b = makePane("calendar"),
