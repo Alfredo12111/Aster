@@ -3,8 +3,9 @@ import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { randomUUID } from 'node:crypto';
-vi.mock('electron', () => ({ safeStorage: { isEncryptionAvailable: () => true, encryptString: (s: string) => Buffer.from('test-encryption:' + s), decryptString: (b: Buffer) => b.toString().replace('test-encryption:', '') } }));
+vi.mock('electron', () => ({ safeStorage: { isEncryptionAvailable: () => true, getSelectedStorageBackend: () => 'gnome_libsecret', encryptString: (s: string) => Buffer.from('test-encryption:' + s), decryptString: (b: Buffer) => b.toString().replace('test-encryption:', '') } }));
 import { AiService } from '../apps/desktop/electron/ai';
+import { safeStorage } from 'electron';
 import { defaultSettings, type VaultSnapshot } from '../packages/core/types';
 let root: string;
 beforeEach(async () => { root = await fs.mkdtemp(path.join(os.tmpdir(), 'aster-ai-')); });
@@ -32,5 +33,18 @@ describe('optional BYOK AI boundary', () => {
     fetcher.mockResolvedValue(new Response(JSON.stringify({ content: [{ type: 'text', text: 'not valid JSON' }] }), { status: 200 }));
     await expect(ai.suggest(vault, sourceId)).rejects.toThrow('No connections were changed');
     expect(vault.settings.relations).toEqual([]);
+  });
+  it('refuses to save a key when the Linux plaintext storage backend is active', async () => {
+    const platform = vi.spyOn(process, 'platform', 'get').mockReturnValue('linux');
+    const backend = (safeStorage as { getSelectedStorageBackend?: () => string }).getSelectedStorageBackend;
+    (safeStorage as { getSelectedStorageBackend?: () => string }).getSelectedStorageBackend = () => 'basic_text';
+    try {
+      const ai = new AiService(root);
+      await expect(ai.save({ provider: 'openai', model: 'test-model', key: 'unit-test-key' })).rejects.toThrow('Secure key storage is unavailable');
+      expect((await ai.settings()).hasKey).toBe(false);
+    } finally {
+      platform.mockRestore();
+      (safeStorage as { getSelectedStorageBackend?: () => string }).getSelectedStorageBackend = backend;
+    }
   });
 });
