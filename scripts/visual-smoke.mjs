@@ -39,7 +39,6 @@ try {
     "Tasks & Projects",
   ]) {
     const toggle = page.getByLabel("Enable " + name, { exact: true });
-    await toggle.click();
     await expect(toggle).toBeChecked();
   }
   await page.getByRole("button", { name: "Open Charts", exact: true }).click();

@@ -10,7 +10,7 @@
 The current Windows x64 build is unsigned. Windows may show a reputation warning. Check that the download comes from the repository linked above and compare its SHA-256 checksum with the release's `SHA256SUMS.txt` before deciding to run it:
 
 ```powershell
-Get-FileHash .\Aster-0.3.1-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\Aster-0.3.2-windows-x64.zip -Algorithm SHA256
 ```
 
 This directory build does not install a Windows service or require Node.js. You may move the extracted app folder later. Your notes and app settings are stored separately from that folder; this is not a fully portable user profile.
@@ -20,14 +20,14 @@ This directory build does not install a Windows service or require Node.js. You 
 1. Aster opens a synthetic **Aster Welcome** vault. Try dragging nodes and changing graph colors in the Appearance panel.
 2. Choose **New vault** for a new notes folder or **Open** for an existing Markdown folder. Back up important notes before trying an alpha build.
 3. Create a note with **Ctrl+N**. Add `[[Another note]]` to connect it. **Graph / Split / Write** changes the workspace layout.
-4. Open the **puzzle icon** on the left. Enable Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, or Kanban for this vault. All modules are optional; switching one off preserves its data.
+4. Open the **puzzle icon** on the left. Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban start enabled in new vaults. Switch off tools you do not need without deleting their data. Existing vaults keep their saved switches.
 5. Use **Ctrl+P** to jump to a note. Use the folder icon beside **Stored on this device** to find the active vault on disk.
 
 No account, API key, or internet connection is required for local notes and modules. The optional AI feature needs your own provider key and model ID, entered in **AI settings**. It sends note excerpts only when you explicitly request suggestions. Do not place keys in notes or repository files.
 
 ## Make it your workspace
 
-- Use **＋ View** in a pane to add Web, Text, Calendar, PDF Annotation, Charts, Kanban, or another tool. Enable optional modules from the puzzle icon first.
+- Use **＋ View** in a pane to add Web, Text, Calendar, PDF Annotation, Charts, Kanban, or another tool. All modules start enabled in new vaults; manage their switches from the puzzle icon.
 - Use **Split pane right** or **Split pane below** beside the tabs. Drag the border between panes; double-click it to reset to equal sizes. The focused border also accepts arrow keys.
 - Drag tabs to another pane. **Save layout** names the arrangement; **Saved layouts** restores it. The current arrangement also returns on restart.
 - Use **Appearance & themes** on the lower left for six themes, including Cyber and Lavender.

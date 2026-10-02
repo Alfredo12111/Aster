@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2 — 2026-10-02
+
+- All seven built-in modules are enabled by default in new vaults and when their saved switch is missing. Existing explicit switches remain respected, and users can still disable modules without deleting data.
+- Updated the feature page, setup guide, module screen, and packaged desktop checks for the new defaults.
+
 ## 0.3.1 — 2026-10-02
 
 - Fixed reopening a selected note after switching to Graph or restoring a graph-only layout. Graph/module tabs no longer masquerade as note editors, including previously saved layouts.

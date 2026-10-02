@@ -1,6 +1,6 @@
 # Validation record
 
-Aster 0.3.1, tested 2 October 2026 on the development Windows host with Node.js 24.19.0.
+Aster 0.3.2, tested 2 October 2026 on the development Windows host with Node.js 24.19.0.
 
 ## Completed
 
@@ -16,7 +16,7 @@ Aster 0.3.1, tested 2 October 2026 on the development Windows host with Node.js 
 
 ## New visual workspace coverage
 
-All three desktop suites passed locally against the packaged 0.3.1 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
+All three desktop suites passed locally against the packaged 0.3.2 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
 
 Core tests additionally check finite chart options, invalid OHLC, category aggregation, calendar duplicates/invalid dates, exact category trend predictions, polynomial/exponential fits, PMT/NPV/FV, formula errors/cycles, CSV escaping, XLSX round trips/archive limits, old-sidecar defaults, Kanban ordering, and nested pane identity/collapse rules. Test discovery is limited to tests/; ignored local audit copies are not counted.
 

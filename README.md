@@ -45,7 +45,7 @@ Your vault is a folder you own. The core experience works without an account, cl
 | **Arrange your workspace** | Combine any views in up to eight resizable panes, move tabs between panes, and save layouts. Choose Aster, Cyber, Lavender, Deep Ocean, Paper, or Rosewood. |
 | **Prepare knowledge for RAG** | Export JSONL chunks with source paths, note IDs, revisions, character spans, tags, and accepted relationships. |
 
-Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban are optional per-vault modules. Enable them from the **puzzle icon**. Turning one off preserves its data.
+Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban are enabled by default in new vaults. Manage them from the **puzzle icon**. Turning one off preserves its data; existing vault choices are retained.
 
 <table>
   <tr>
@@ -76,7 +76,7 @@ Read the [charts and formulas guide](docs/CHARTS.md), [workspace controls](docs/
 
 ### Download the Windows app
 
-1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.3.1-windows-x64.zip**.
+1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.3.2-windows-x64.zip**.
 2. **Extract the entire ZIP** to a normal folder.
 3. Open **Aster.exe** inside it. Keep the accompanying files beside the executable.
 4. Explore the welcome vault, or choose **New vault** / **Open** for your own notes.

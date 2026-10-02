@@ -1,6 +1,6 @@
 {
   "name": "aster-desktop",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "type": "module",
   "description": "Local-first connected notes and spatial thinking",

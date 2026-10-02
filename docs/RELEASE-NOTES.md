@@ -1,6 +1,8 @@
-# Aster 0.3.1 — Visual workspaces
+# Aster 0.3.2 — Built-in tools ready to use
 
-Charts, connected Kanban, resizable workspaces and six themes join Aster's local Markdown vaults and built-in research tools.
+All seven built-in modules now start enabled in new vaults. Existing vaults retain their saved switches, and modules can still be disabled without deleting their data.
+
+Included in Aster's local Markdown workspace:
 
 - Thirteen chart types from live queries, Markdown tables and imported CSV/XLSX data.
 - Editable worksheets with formulas, cross-sheet references, statistics, financial functions, regression and image/data exports.
@@ -10,17 +12,17 @@ Charts, connected Kanban, resizable workspaces and six themes join Aster's local
 
 Calendar, Tasks & Projects, PDF annotation/navigation, live Canvas queries, metadata navigation, BYOK suggestions and RAG JSONL export remain included.
 
-This release also fixes reopening a selected note from Graph, including previously saved layouts.
+The previous release's fix for reopening a selected note from Graph, including previously saved layouts, is included.
 
 ## Download and run
 
-1. Download **Aster-0.3.1-windows-x64.zip**.
+1. Download **Aster-0.3.2-windows-x64.zip**.
 2. Extract the entire ZIP.
 3. Open **Aster.exe**. Keep its accompanying files together.
 
 No Node.js or developer tools are required. This is an unsigned Windows x64 alpha. Compare the ZIP's SHA-256 hash with **SHA256SUMS.txt**. The archive includes setup instructions; GitHub's generated Source code downloads are not the runnable app.
 
-Use the puzzle icon to enable Charts and Kanban, **＋ View** and split buttons to arrange tools, and **Appearance & themes** to choose a theme. Back up your entire vault before updating.
+All seven modules now start enabled in new vaults. Existing vaults retain their saved choices. Use the puzzle icon to manage modules, **＋ View** and split buttons to arrange tools, and **Appearance & themes** to choose a theme. Back up your entire vault before updating.
 
 ## Validation and limits
 

@@ -37,10 +37,13 @@ it("migrates older module sidecars without changing their data", () => {
   delete state.workspace;
   delete state.enabled.charts;
   delete state.enabled.kanban;
+  state.enabled.pdf = false;
   const parsed = moduleStateSchema.parse(state);
   expect(parsed.charts).toEqual([]);
   expect(parsed.workspace.theme).toBe("aster");
-  expect(parsed.enabled.kanban).toBe(false);
+  expect(parsed.enabled.charts).toBe(true);
+  expect(parsed.enabled.kanban).toBe(true);
+  expect(parsed.enabled.pdf).toBe(false);
 });
 it("only gives text tabs a note identity when creating workspace presets", () => {
   const noteId = crypto.randomUUID();

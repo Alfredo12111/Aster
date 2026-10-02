@@ -195,8 +195,8 @@ export default function ModuleHost({
           <span className="eyebrow">BUILT IN. YOUR CHOICE.</span>
           <h1>More ways to work with your knowledge.</h1>
           <p>
-            Enable the tools this vault needs. Turning a tool off preserves its
-            data.
+            All tools start enabled in new vaults. Choose which tools you want
+            here; turning one off preserves its data.
           </p>
           <div className="module-cards">
             {moduleNames.map((m) => {

@@ -54,13 +54,14 @@ try {
     "Enable PDF Library",
     "Enable Canvas",
     "Enable Navigator",
+    "Enable Charts",
+    "Enable Kanban",
   ]) {
     const toggle = page.getByRole("checkbox", { name: label, exact: true });
-    await toggle.click();
     await expect(toggle).toBeChecked();
   }
   await expect(page.locator(".module-save-status")).toHaveText("Local vault");
-  step("Modules enabled; creating a project");
+  step("All seven modules enabled by default; creating a project");
   await page.getByRole("button", { name: "Projects", exact: true }).click();
   await page.getByRole("button", { name: "New project", exact: true }).click();
   await page

@@ -1,6 +1,6 @@
 # Charts, worksheets and calculations
 
-Enable **Charts** from Built-in modules. Use **Try sample data** for a fictional dataset, **New workbook** for a blank sheet, or **Import CSV / Excel** for UTF-8 CSV/TSV or XLSX.
+Open **Charts** from Built-in modules. It is enabled by default in new vaults. Use **Try sample data** for a fictional dataset, **New workbook** for a blank sheet, or **Import CSV / Excel** for UTF-8 CSV/TSV or XLSX.
 
 ## Three data sources
 

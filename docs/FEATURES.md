@@ -2,7 +2,7 @@
 
 Aster 0.3 brings charts, connected Kanban, flexible workspaces, and themes together with Calendar, Tasks & Projects, PDF annotation, live Canvas queries, and metadata navigation. This guide describes shipped behavior. See [remaining roadmap](ADDON-ROADMAP.md) for future work.
 
-Open **Built-in modules** (the puzzle icon on the activity bar) and enable the tools you want for this vault. All seven switches start off for a new vault. Disabling a module preserves its records. Creating a task from a note explicitly enables Tasks & Projects if needed. Everything here works locally without plugins, an account, an AI key, or a cloud service.
+Open **Built-in modules** (the puzzle icon on the activity bar) to manage the tools for this vault. All seven switches start on for a new vault. Existing saved switches are respected; missing switches default to enabled. Disabling a module preserves its records. Creating a task from a note explicitly enables Tasks & Projects if needed. Everything here works locally without plugins, an account, an AI key, or a cloud service.
 
 ## Flexible workspaces
 
