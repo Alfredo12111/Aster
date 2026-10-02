@@ -17,7 +17,7 @@ export class AiService {
   async settings(): Promise<AiSettings> { const c = await this.read(); return { provider: c.provider, model: c.model, hasKey: !!c.encryptedKey }; }
   async save(input: unknown) {
     const next = inputSchema.parse(input), old = await this.read();
-    if (!safeStorage.isEncryptionAvailable() || (process.platform === 'linux' && safeStorage.getSelectedStorageBackend() === 'basic_text')) throw new Error('Secure key storage is unavailable. Your key was not saved.');
+    if (!safeStorage.isEncryptionAvailable() || (process.platform === 'linux' && safeStorage.getSelectedStorageBackend?.() === 'basic_text')) throw new Error('Secure key storage is unavailable. Your key was not saved.');
     let encryptedKey = old.provider === next.provider ? old.encryptedKey : '';
     if (next.key !== undefined) encryptedKey = next.key.trim() ? safeStorage.encryptString(next.key.trim()).toString('base64') : '';
     await atomicWrite(path.join(this.userData, 'ai.json'), JSON.stringify({ provider: next.provider, model: next.model, encryptedKey }));

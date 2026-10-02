@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Hardened BYOK AI key storage: the Linux plaintext storage backend is now detected defensively, and the AI boundary tests cover the refusal path on every platform.
+
 ## 0.5.1 - 2026-10-02
 
 - Fixed unreadable native view-dropdown options. Menus use a theme-matched dark background and light text across all six themes, including Lavender and Paper.
