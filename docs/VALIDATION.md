@@ -67,3 +67,7 @@ These measure pure core algorithms on this host. They do **not** measure full de
 - Signed installer/update distribution, macOS/Linux behavior, adversarial filesystem races, abrupt power loss, disk-full recovery, accessibility at all scale factors, external rename reconciliation, or compatibility with third-party plugin systems.
 
 The build is suitable for evaluating the product direction with backed-up local vaults. It is not ready for a large public launch.
+
+## 0.5.1 menu patch
+
+The packaged view dropdown was checked across Aster, Cyber, Lavender, Deep Ocean, Paper, and Rosewood. Every option has a dark background and text contrast above 7:1. The patch release workflow repeats all five packaged desktop suites and the core tests before publishing audited assets.

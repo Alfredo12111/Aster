@@ -51,7 +51,7 @@ Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban a
 
 ## New in 0.5: step inside Pelagic Labs
 
-The latest source build also fixes view-dropdown readability with dark, theme-matched menus and light text in every theme.
+Version 0.5.1 fixes view-dropdown readability with dark, theme-matched menus and light text in every theme.
 
 Your first launch opens a complete fictional coastal research organization. Restore a reef, launch an ocean sensor network, and follow the evidence behind its decisions. Everything is editable **inside Aster**, including the data behind each visualization.
 
@@ -74,7 +74,7 @@ Read the [charts and formulas guide](docs/CHARTS.md), [connected maps and eviden
 
 ### Download the Windows app
 
-1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.5.0-windows-x64.zip**.
+1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.5.1-windows-x64.zip**.
 2. **Extract the entire ZIP** to a normal folder.
 3. Open **Aster.exe** inside it. Keep the accompanying files beside the executable.
 4. Explore Pelagic Labs, or choose **New vault** / **Open** for your own notes.

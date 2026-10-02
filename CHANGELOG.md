@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.1 - 2026-10-02
 
 - Fixed unreadable native view-dropdown options. Menus use a theme-matched dark background and light text across all six themes, including Lavender and Paper.
 
