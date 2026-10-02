@@ -109,6 +109,11 @@ select {
   width: 100%;
   font-size: 13px;
 }
+select option,
+select optgroup {
+  background: var(--menu-bg, #22252a);
+  color: var(--menu-text, #e5e6e9);
+}
 h1,
 h2,
 h3,

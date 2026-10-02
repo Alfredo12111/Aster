@@ -51,6 +51,8 @@ Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban a
 
 ## New in 0.5: step inside Pelagic Labs
 
+The latest source build also fixes view-dropdown readability with dark, theme-matched menus and light text in every theme.
+
 Your first launch opens a complete fictional coastal research organization. Restore a reef, launch an ocean sensor network, and follow the evidence behind its decisions. Everything is editable **inside Aster**, including the data behind each visualization.
 
 **128 notes · 40 tool nodes · 15 charts · 3 workbooks · 6 projects · 42 tasks · 3 boards · 3 annotated PDFs**

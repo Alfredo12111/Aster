@@ -1,9 +1,5 @@
 @echo off
 cd /d "%~dp0"
-if exist "release-v0.5.0\win-unpacked\Aster.exe" (
-  start "" "release-v0.5.0\win-unpacked\Aster.exe"
-  exit /b 0
-)
 if exist "release\win-unpacked\Aster.exe" (
   start "" "release\win-unpacked\Aster.exe"
 ) else (

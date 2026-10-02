@@ -157,6 +157,8 @@ export function applyTheme(name: ThemeName) {
     line: theme.line,
     accent: theme.accent,
     "on-accent": theme.onAccent,
+    "menu-bg": theme.light ? theme.text : theme.panel,
+    "menu-text": theme.light ? theme.panel : theme.text,
   }))
     root.style.setProperty("--" + key, value);
   for (const hex of legacyColors)

@@ -130,6 +130,9 @@
 .pane-tabs select {
   max-width: 90px;
   min-width: 70px;
+  color-scheme: dark;
+  background: var(--menu-bg, #22252a);
+  color: var(--menu-text, #e5e6e9);
 }
 .pane-content {
   flex: 1;

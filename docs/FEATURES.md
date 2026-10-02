@@ -18,6 +18,8 @@ The graph can include existing workbooks, charts, Kanban boards, Canvas boards, 
 
 ## Themes
 
+Native dropdown lists use dark backgrounds and light lettering matched to each theme, including the lighter Lavender and Paper themes.
+
 Open **Appearance & themes** on the activity bar. Choose **Aster**, **Cyber** (green/black), **Lavender** (purple/light gray), **Deep Ocean**, **Paper**, or **Rosewood**. The theme applies immediately and persists per vault. Editor and chart colors adapt; custom graph colors and original PDF page colors remain intact.
 
 ## Charts

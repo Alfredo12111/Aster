@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fixed unreadable native view-dropdown options. Menus use a theme-matched dark background and light text across all six themes, including Lavender and Paper.
+
 ## 0.5.0 - 2026-10-02
 
 - Pelagic Labs is the first-launch vault: 128 linked notes, 40 native tool nodes, three workbooks with nine sheets, 15 charts covering all chart families and sources, six projects, 42 tasks, three Kanban boards, three Canvas boards, and 21 daily notes.
