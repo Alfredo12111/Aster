@@ -1,6 +1,6 @@
 # Aster feature guide
 
-Aster 0.4 connects tools to the graph and a new visual tree, adds evidence-backed relationships, and expands workbook editing alongside charts, Kanban, flexible workspaces, and themes with Calendar, Tasks & Projects, PDF annotation, live Canvas queries, and metadata navigation. This guide describes shipped behavior. See [remaining roadmap](ADDON-ROADMAP.md) for future work.
+Aster 0.5 includes the complete [Pelagic Labs demo](DEMO.md) on first launch. It connects tools to the graph and a new visual tree, adds evidence-backed relationships, and expands workbook editing alongside charts, Kanban, flexible workspaces, and themes with Calendar, Tasks & Projects, PDF annotation, live Canvas queries, and metadata navigation. This guide describes shipped behavior. See [remaining roadmap](ADDON-ROADMAP.md) for future work.
 
 Open **Built-in modules** (the puzzle icon on the activity bar) to manage the tools for this vault. All seven switches start on for a new vault. Existing saved switches are respected; missing switches default to enabled. Disabling a module preserves its records. Creating a task from a note explicitly enables Tasks & Projects if needed. Everything here works locally without plugins, an account, an AI key, or a cloud service.
 

@@ -146,3 +146,12 @@ Resource pins store a stable node UUID plus a typed reference to an existing mod
 Connection evidence stores immutable quote snapshots plus source identity, note revision/span or PDF fingerprint/annotation version/page. Review compares the current saved record; opening PDFs independently checks their bytes. This is provenance capture, not proof that a claim is true. Full document extraction and retrieval-time freshness evaluation remain future work.
 
 The visual tree reuses the cycle-safe folder/metadata hierarchy and an iterative layout with a bounded 600-card viewport result. Source rows remain fixed during worksheet filtering/sorting. Structural workbook operations repair A1 formulas and chart sources in one serialized module transaction; undo patches guard against overwriting later chart-source changes. Formula XLSX export permits known functions and blocks external references.
+
+
+## Bundled organization demo (0.5)
+
+`packages/demo` generates a fully native Pelagic Labs vault with stable note/tool IDs, relative paths, synthetic data, formulas, current evidence snapshots, and saved layouts. Three original PDF assets and their annotation anchors ship under `dist/demo` inside the app archive. No app profile, credentials, or personal vault is bundled.
+
+First launch with no saved root creates the demo in a sibling staging directory, validates its schema, then renames it into place. Windows sharing errors receive a bounded retry. An existing root is never reseeded, and explicit New vault remains empty. The vault:demo API accepts no filesystem path and creates or reopens only the dedicated demo copy. UI switching flushes pending edits before adopting another vault. Demo dates are anchored once at creation; restarts do not rewrite dates or content.
+
+The release includes an optional audited synthetic-vault ZIP. It deliberately contains its own .aster records, unlike the application ZIP, which contains build-only resources. Demo source generators and PDF assets are tracked; exported vaults, profiles, binaries, and screenshots from private data are excluded.

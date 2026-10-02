@@ -26,7 +26,7 @@ Aster brings your files, relationships, research, and project work into one work
 
 Your vault is a folder you own. The core experience works without an account, cloud service, API key, or plugin installation.
 
-![Aster's graph workspace with a sample knowledge vault](docs/aster-preview.png)
+![Pelagic Labs: 168 notes and tool nodes inside Aster](docs/assets/pelagic-graph.png)
 
 ## A workspace that grows with your thinking
 
@@ -49,51 +49,33 @@ Your vault is a folder you own. The core experience works without an account, cl
 
 Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban are enabled by default in new vaults. Manage them from the **puzzle icon**. Turning one off preserves its data; existing vault choices are retained.
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/assets/canvas.png" alt="Canvas with live Aster Query cards"><br><strong>Live Canvas queries</strong><br>Useful tables, arranged where you need them.</td>
-    <td width="50%"><img src="docs/assets/pdf.png" alt="PDF annotation workspace with selected evidence"><br><strong>Sources you can return to</strong><br>Editable annotations anchored to the original page.</td>
-  </tr>
-</table>
+## New in 0.5: step inside Pelagic Labs
 
-<details>
-<summary><strong>See the project workspace</strong></summary>
+Your first launch opens a complete fictional coastal research organization. Restore a reef, launch an ocean sensor network, and follow the evidence behind its decisions. Everything is editable **inside Aster**, including the data behind each visualization.
 
-![Projects collect tasks and related notes](docs/assets/projects.png)
+**128 notes · 40 tool nodes · 15 charts · 3 workbooks · 6 projects · 42 tasks · 3 boards · 3 annotated PDFs**
 
-Screenshots use generated sample content, not personal vaults.
-</details>
+Existing users can choose **Open demo**. Your current vault stays separate, and demo edits survive restarts. There are six saved layouts, three live Canvas boards, 21 daily notes, four graph views, and an in-app field guide. All people, observations, budgets, and reports are synthetic.
 
-## New in 0.4
-
-Keep the research trail together: pin a workbook to the map, connect it to a conclusion, and attach the note passage or PDF annotation behind that connection. The node opens the original tool and shows its current title. Workbook edits update dependent charts, including range changes when inserting rows.
-
-![Aster connected tree](docs/assets/tree.png)
-
-[Connected maps and evidence](docs/CONNECTED-WORKSPACE.md) explains the new controls and source-review behavior.
+![A live chart beside its native workbook](docs/assets/pelagic-data.png)
 
 <table>
-<tr><td width="50%"><img src="docs/assets/evidence.png" alt="Exact note and PDF evidence on a connection"><br><strong>Connections with a source trail</strong></td><td width="50%"><img src="docs/assets/workbook.png" alt="Research workbook editing and range statistics"><br><strong>Workbooks for research and analysis</strong></td></tr>
+<tr><td width="50%"><img src="docs/assets/pelagic-launch.png" alt="Pelagic launch tasks in Kanban beside Calendar"><br><strong>One task, every view</strong><br>Move a card and its task status changes throughout the workspace.</td><td width="50%"><img src="docs/assets/pelagic-evidence.png" alt="Annotated reef report beside an expansion decision in Aster"><br><strong>A decision with its source</strong><br>Read the report, inspect annotations, and retain the claim's limits.</td></tr>
+<tr><td width="50%"><img src="docs/assets/pelagic-tree.png" alt="Filtered parent-metadata tree and Navigator"><br><strong>Order beyond the graph</strong><br>Browse a site's surveys through parent metadata and filters.</td><td width="50%"><img src="docs/assets/pelagic-canvas.png" alt="Live station and nursery queries beside telemetry"><br><strong>Live research views</strong><br>Note metadata feeds Canvas cards and query charts.</td></tr>
 </table>
 
-## Charts and flexible workspaces
+These are screenshots of the working app, using only bundled synthetic data. [Take the demo tour](docs/DEMO.md), or download a separate **Pelagic-Labs-demo.zip** from [Releases](https://github.com/Alfredo12111/Aster/releases).
 
-![Live charts with an editable data source](docs/assets/charts.png)
-
-<table>
-<tr><td width="50%"><img src="docs/assets/kanban.png" alt="Native task Kanban"><br><strong>Work connected to your notes</strong></td><td width="50%"><img src="docs/assets/lavender.png" alt="Lavender theme with Kanban and Calendar panes"><br><strong>A workspace you can shape</strong></td></tr>
-</table>
-
-Read the [charts and formulas guide](docs/CHARTS.md), [workspace controls](docs/FEATURES.md#flexible-workspaces), and [remaining addon roadmap](docs/ADDON-ROADMAP.md).
+Read the [charts and formulas guide](docs/CHARTS.md), [connected maps and evidence](docs/CONNECTED-WORKSPACE.md), [workspace controls](docs/FEATURES.md#flexible-workspaces), and [remaining addon roadmap](docs/ADDON-ROADMAP.md).
 
 ## Start in a few minutes
 
 ### Download the Windows app
 
-1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.4.0-windows-x64.zip**.
+1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.5.0-windows-x64.zip**.
 2. **Extract the entire ZIP** to a normal folder.
 3. Open **Aster.exe** inside it. Keep the accompanying files beside the executable.
-4. Explore the welcome vault, or choose **New vault** / **Open** for your own notes.
+4. Explore Pelagic Labs, or choose **New vault** / **Open** for your own notes.
 
 No Node.js or coding tools are needed for the packaged download. The current build is an unsigned Windows x64 alpha. The release includes a SHA-256 checksum and setup instructions. See [Getting started](docs/GETTING-STARTED.md) for verification, updates, and troubleshooting.
 
@@ -157,7 +139,7 @@ The working modules above are implemented and tested. Charting includes all requ
 
 Current protective limits are 20,000 Markdown notes, 2 MB per note, 100 MB of total note text, and 100 MB per PDF. These are limits, not performance promises. The app still loads full note snapshots. The metadata navigator is virtualized; the original file explorer is not.
 
-The validation record covers **66 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
+The validation record covers **71 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
 
 ## Build with us
 
@@ -172,6 +154,7 @@ npm run test:desktop
 npm run test:modules
 npm run test:visual
 npm run test:ecosystem
+npm run test:demo
 npm run audit:publish
 ```
 

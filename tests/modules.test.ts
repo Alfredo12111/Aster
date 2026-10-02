@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { randomUUID } from "node:crypto";
-import { readMetadata, metadataTags } from "../packages/core/metadata";
+import {
+  readMetadata,
+  metadataTags,
+  markdownBody,
+} from "../packages/core/metadata";
 import { parseQuery, executeQuery } from "../packages/core/query";
 import {
   metadataTree,
@@ -143,4 +147,16 @@ describe("hierarchy", () => {
       flattenTree(folderTree(notes), new Set(["folder:Research"])),
     ).toHaveLength(10001);
   });
+});
+it("keeps valid frontmatter out of reading prose without hiding malformed documents", () => {
+  expect(
+    markdownBody(
+      '---\ntype: "decision"\nparent: "[[Mission]]"\n---\n# Decision\n\nText.',
+    ),
+  ).toBe("# Decision\n\nText.");
+  expect(markdownBody("---\r\ntags: [demo]\r\n...\r\nBody")).toBe("Body");
+  expect(markdownBody("---\ntags: [broken\n---\nBody")).toContain(
+    "tags: [broken",
+  );
+  expect(markdownBody("# Note\n\n---\nText")).toBe("# Note\n\n---\nText");
 });

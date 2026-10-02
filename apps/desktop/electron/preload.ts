@@ -3,6 +3,7 @@ import type { AsterApi } from "../../../packages/core/types";
 const api: AsterApi = {
   load: () => ipcRenderer.invoke("vault:load"),
   openVault: () => ipcRenderer.invoke("vault:open"),
+  openDemo: () => ipcRenderer.invoke("vault:demo"),
   createVault: () => ipcRenderer.invoke("vault:create"),
   saveNote: (input) => ipcRenderer.invoke("note:save", input),
   createNote: (input) => ipcRenderer.invoke("note:create", input),

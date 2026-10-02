@@ -20,6 +20,6 @@ Never include personal notes, imported private PDFs, API keys, app profiles, log
 
 The owner's standing preference is to commit and push completed changes, with the feature page kept current. Repository-specific agent instructions live in [AGENTS.md](AGENTS.md).
 
-For a release, update package version and changelog, build the app, run all four desktop suites against the packaged executable, and run `npm run audit:release`. `npm run release:zip` writes the complete Windows app ZIP and SHA-256 checksum into ignored `artifacts/`. Publish those assets through GitHub Releases, not as source commits. A version tag triggers the release workflow to repeat these checks before publication.
+For a release, update package version and changelog, build the app, run all five desktop suites against the packaged executable, and run `npm run audit:release`. `npm run release:zip` writes the complete Windows app ZIP and SHA-256 checksum into ignored `artifacts/`. Run `npm run demo:export` after `release:zip` to add the separately audited synthetic demo ZIP and its checksum. Update the local Windows build without touching user vaults. Publish those assets through GitHub Releases, not as source commits. A version tag triggers the release workflow to repeat these checks before publication.
 
 GitHub credentials belong in the operating system credential store or GitHub CLI's secure sign-in. Automated workflows use GitHub's scoped job token. No personal access token or AI provider key is required in this repository.

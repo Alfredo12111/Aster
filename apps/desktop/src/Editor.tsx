@@ -11,6 +11,7 @@ import remarkGfm from "remark-gfm";
 import { BookOpen, Code2, FileText, CheckSquare } from "lucide-react";
 import type { Note } from "../../../packages/core/types";
 import { buildResolver } from "../../../packages/core/knowledge";
+import { markdownBody } from "../../../packages/core/metadata";
 type Props = {
   note: Note;
   notes: Note[];
@@ -117,10 +118,13 @@ export default function Editor({
     [notes, note.id],
   );
   const resolve = useMemo(() => buildResolver(notes), [notes]);
-  const rendered = value.replace(/\[\[([^\]\n]+)\]\]/g, (_m, inner: string) => {
-    const [target, label] = inner.split("|");
-    return `[${label ?? target}](#note-${encodeURIComponent(target)})`;
-  });
+  const rendered = markdownBody(value).replace(
+    /\[\[([^\]\n]+)\]\]/g,
+    (_m, inner: string) => {
+      const [target, label] = inner.split("|");
+      return `[${label ?? target}](#note-${encodeURIComponent(target)})`;
+    },
+  );
   return (
     <section className="editor-panel">
       <div className="editor-toolbar">

@@ -10,14 +10,14 @@
 The current Windows x64 build is unsigned. Windows may show a reputation warning. Check that the download comes from the repository linked above and compare its SHA-256 checksum with the release's `SHA256SUMS.txt` before deciding to run it:
 
 ```powershell
-Get-FileHash .\Aster-0.4.0-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\Aster-0.5.0-windows-x64.zip -Algorithm SHA256
 ```
 
 This directory build does not install a Windows service or require Node.js. You may move the extracted app folder later. Your notes and app settings are stored separately from that folder; this is not a fully portable user profile.
 
 ## Your first five minutes
 
-1. Aster opens a synthetic **Aster Welcome** vault. Try dragging nodes and changing graph colors in the Appearance panel.
+1. Aster opens **Pelagic Labs**, a full synthetic organization with notes, working charts and workbooks, boards, projects, tasks, live queries, and annotated PDFs. Use **Saved layouts** to explore it. Existing users can choose **Open demo** without changing their personal vault. See the [demo tour](DEMO.md).
 2. Choose **New vault** for a new notes folder or **Open** for an existing Markdown folder. Back up important notes before trying an alpha build.
 3. Create a note with **Ctrl+N**. Add `[[Another note]]` to connect it. **Graph / Split / Write** changes the workspace layout.
 4. Open the **puzzle icon** on the left. Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban start enabled in new vaults. Switch off tools you do not need without deleting their data. Existing vaults keep their saved switches.
@@ -46,7 +46,9 @@ No account, API key, or internet connection is required for local notes and modu
 - `Attachments/` holds imported PDFs. Their original bytes are not edited.
 - `.aster/history`, `.aster/module-history` and `.aster/trash` retain recovery data.
 
-Back up the entire vault, including hidden `.aster` files and attachments. API keys are encrypted in the local application profile and are not saved in the vault. The first-run welcome vault also lives in that profile; the folder button shows its actual location.
+Back up the entire vault, including hidden `.aster` files and attachments. API keys are encrypted in the local application profile and are not saved in the vault. The first-run Pelagic Labs demo also lives in that profile; the folder button shows its actual location.
+
+Demo creation never overwrites an existing vault. **Open demo** reopens your edited copy; the separate **Pelagic-Labs-demo.zip** release asset provides a fresh copy if wanted.
 
 ## Update an existing download
 

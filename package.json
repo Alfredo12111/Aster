@@ -1,6 +1,6 @@
 {
   "name": "aster-desktop",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "description": "Local-first connected notes and spatial thinking",
@@ -21,7 +21,9 @@
     "audit:release": "node scripts/audit-release.mjs",
     "release:zip": "node scripts/release-zip.mjs",
     "test:visual": "node scripts/visual-smoke.mjs",
-    "test:ecosystem": "node scripts/ecosystem-smoke.mjs"
+    "test:ecosystem": "node scripts/ecosystem-smoke.mjs",
+    "test:demo": "node scripts/demo-smoke.mjs",
+    "demo:export": "node scripts/export-demo.mjs"
   },
   "build": {
     "appId": "com.aster.notes",

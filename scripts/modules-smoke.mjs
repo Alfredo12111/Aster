@@ -1,3 +1,4 @@
+import { createBasicVault } from './test-vault.mjs';
 import { _electron as electron, expect } from "@playwright/test";
 import electronPath from "electron";
 import path from "node:path";
@@ -14,7 +15,7 @@ const launchOptions = {
   executablePath: packaged ?? electronPath,
   args: packaged ? [] : ["."],
   cwd: process.cwd(),
-  env: { ...process.env, ASTER_USER_DATA: profile },
+  env: { ...process.env, ASTER_USER_DATA: profile, ASTER_INITIAL_VAULT: await createBasicVault(profile) },
   timeout: 30000,
 };
 let instance = await electron.launch(launchOptions);

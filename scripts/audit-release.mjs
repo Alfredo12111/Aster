@@ -6,7 +6,7 @@ import { scanText } from './audit-publish.mjs';
 
 export async function auditRelease() {
   const manifest=JSON.parse(await fs.readFile('package.json','utf8'));
-  const directory=path.resolve(manifest.build.directories.output,'win-unpacked');
+  const directory=process.env.ASTER_RELEASE_DIR ? path.resolve(process.env.ASTER_RELEASE_DIR) : path.resolve(manifest.build.directories.output,'win-unpacked');
   const archive=path.join(directory,'resources/app.asar');
   const files=listPackage(archive).map(s=>s.replace(/\\/g,'/').replace(/^\//,''));
   const failures=[];

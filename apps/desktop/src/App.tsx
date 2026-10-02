@@ -157,6 +157,7 @@ export default function App() {
       !reset && data.notes.some((n) => n.id === previous)
         ? previous
         : ((
+            data.notes.find((n) => n.title === "Welcome aboard") ??
             data.notes.find((n) => n.title === "Knowledge architecture") ??
             data.notes[0]
           )?.id ?? ""),
@@ -345,10 +346,14 @@ export default function App() {
     setSelected(id);
     workspaceRef.current?.openNote(id);
   };
-  const switchVault = async (create = false) => {
+  const switchVault = async (create: boolean | "demo" = false) => {
     try {
       if (!(await flushAll())) return;
-      const data = await (create ? api.createVault() : api.openVault());
+      const data = await (create === "demo"
+        ? api.openDemo()
+        : create
+          ? api.createVault()
+          : api.openVault());
       if (data) {
         adopt(data, true);
         setQuery("");
@@ -793,6 +798,12 @@ export default function App() {
             <button onClick={() => void switchVault(true)}>
               <Plus size={13} />
               New vault
+            </button>
+            <button
+              onClick={() => void switchVault("demo")}
+              title="Explore Pelagic Labs, your editable demo vault"
+            >
+              Open demo
             </button>
           </div>
           <div className="searchbox">

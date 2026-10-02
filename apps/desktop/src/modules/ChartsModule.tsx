@@ -79,7 +79,7 @@ export default function ChartsModule({
     [calcError, setCalcError] = useState(""),
     [calculating, setCalculating] = useState(false),
     [busy, setBusy] = useState(false),
-    [showConfig, setShowConfig] = useState(true);
+    [showConfig, setShowConfig] = useState(resource?.kind !== "chart");
   const [dialog, setDialog] = useState<
       "workbook" | "delete-chart" | "delete-data" | null
     >(null),

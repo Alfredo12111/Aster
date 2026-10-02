@@ -1,6 +1,15 @@
 import { parseDocument } from "yaml";
 import type { Note } from "./types";
 export type Metadata = Record<string, unknown>;
+// Reading mode shows prose, while source mode retains editable frontmatter.
+// Malformed metadata stays visible so it can be repaired rather than hidden.
+export function markdownBody(content: string) {
+  if (readMetadata(content).error) return content;
+  return content.replace(
+    /^\uFEFF?---\r?\n[\s\S]*?\r?\n(?:---|\.\.\.)(?:\r?\n|$)/,
+    "",
+  );
+}
 export function readMetadata(content: string): {
   fields: Metadata;
   error?: string;

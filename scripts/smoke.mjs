@@ -1,3 +1,4 @@
+import { createBasicVault } from './test-vault.mjs';
 import { _electron as electron, expect } from '@playwright/test';
 import electronPath from 'electron';
 import path from 'node:path';
@@ -7,7 +8,7 @@ const results = path.resolve('test-results');
 await fs.mkdir(results, {recursive:true});
 const profile = path.join(results, `profile-${randomUUID()}`);
 const packaged=process.env.ASTER_PACKAGED_EXE;
-const instance = await electron.launch({executablePath:packaged ?? electronPath,args:packaged ? [] : ['.'],cwd:process.cwd(),env:{...process.env,ASTER_USER_DATA:profile},timeout:30000});
+const instance = await electron.launch({executablePath:packaged ?? electronPath,args:packaged ? [] : ['.'],cwd:process.cwd(),env:{...process.env,ASTER_USER_DATA:profile,ASTER_INITIAL_VAULT:await createBasicVault(profile)},timeout:30000});
 const errors=[];
 try {
   const page = await instance.firstWindow();

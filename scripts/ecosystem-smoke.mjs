@@ -1,3 +1,4 @@
+import { createBasicVault } from './test-vault.mjs';
 import { _electron as electron, expect } from "@playwright/test";
 import electronPath from "electron";
 import fs from "node:fs/promises";
@@ -12,7 +13,7 @@ const launch = {
   executablePath: packaged ?? electronPath,
   args: packaged ? [] : ["."],
   cwd: process.cwd(),
-  env: { ...process.env, ASTER_USER_DATA: profile },
+  env: { ...process.env, ASTER_USER_DATA: profile, ASTER_INITIAL_VAULT: await createBasicVault(profile) },
   timeout: 30000,
 };
 let app = await electron.launch(launch),
@@ -388,6 +389,7 @@ try {
   await expect(page.locator(".annotation-entry.active")).toBeVisible();
   step("Open every linked tool in its native view");
   await open("Study chart");
+  await page.getByTitle("Chart configuration", { exact: true }).click();
   await expect(page.getByLabel("Chart title", { exact: true })).toHaveValue(
     "Study chart",
   );

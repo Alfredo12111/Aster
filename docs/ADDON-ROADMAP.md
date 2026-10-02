@@ -1,6 +1,6 @@
 # Aster — remaining addon roadmap
 
-Completed Calendar, Tasks & Projects, PDF annotation/navigation, Canvas queries, Navigator, Charts, Kanban, split workspaces, themes, linked tool nodes, the visual tree, captured connection evidence, and research workbook controls have been removed from this pending list. Their documentation is in the [feature guide](FEATURES.md) and [changelog](../CHANGELOG.md).
+Completed Calendar, Tasks & Projects, PDF annotation/navigation, Canvas queries, Navigator, Charts, Kanban, split workspaces, themes, linked tool nodes, the visual tree, captured connection evidence, research workbook controls, and the full in-app Pelagic Labs demo have been removed from this pending list. Their documentation is in the [feature guide](FEATURES.md) and [changelog](../CHANGELOG.md).
 
 Remaining work, without scheduled phases or promised dates:
 

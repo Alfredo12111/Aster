@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 - 2026-10-02
+
+- Pelagic Labs is the first-launch vault: 128 linked notes, 40 native tool nodes, three workbooks with nine sheets, 15 charts covering all chart families and sources, six projects, 42 tasks, three Kanban boards, three Canvas boards, and 21 daily notes.
+- Three original synthetic PDF reports include all five annotation types. Three evidence-backed relationships connect source passages and PDF annotations to decisions. Six saved layouts and four graph views show the organization from different perspectives.
+- Added Open demo for existing users. Creation is transactional with bounded Windows sharing-lock retries. Existing vaults and edited demo copies are preserved; dates are set only when a copy is created.
+- Reading mode hides valid frontmatter while retaining malformed metadata for repair. Charts opened from tool nodes start with configuration collapsed; slope labels avoid overlapping vertically.
+- Added the downloadable demo vault, in-app walkthroughs, real demo screenshots, 71 core tests, and a fifth desktop suite for first-launch and connected demo workflows. Local Windows builds are part of the standing update checklist.
+
 ## 0.4.0 - 2026-10-02
 
 - Linked map nodes for existing workbooks, charts, Kanban, Canvas, projects, tasks, PDFs and Calendar, with native tool navigation, colors and source-derived relationships. Graph arrangements include tool nodes.

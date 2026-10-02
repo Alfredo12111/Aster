@@ -1,29 +1,31 @@
-# Aster 0.4.0: Connected research workspace
+# Aster 0.5.0: Pelagic Labs
 
-Bring your tools and their sources into the same map:
+Open Aster and step into a complete fictional coastal research organization. Pelagic Labs demonstrates how notes, evidence, data, and project work fit together, entirely inside the app.
 
-- Pin existing workbooks, charts, Kanban boards, Canvas boards, projects, tasks, PDFs and Calendar. Nodes open the original item and share its current data.
-- Switch to an organized visual Tree with folder or parent-metadata branches, regular spacing, zoom and collapse controls. The freeform graph remains available.
-- Attach exact note passages and PDF annotation snapshots to manual connections. Jump to their sources and review changed or missing evidence.
-- Workbooks gain filtering, sorting, range summaries, relative fill, row/column insertion and deletion, sheet management, column number formats, visible CSV and formula XLSX exports.
-- Structural edits and worksheet renames update linked charts. Undo restores affected chart references too. Fixed statistical functions masked by empty parser stubs.
+- **128 linked notes and 40 tool nodes** across nine neighborhoods, with four saved graph views.
+- **Three workbooks, nine sheets, and 15 populated charts**, covering all 13 chart types plus workbook, Markdown table, and live query sources. Formulas and cross-sheet summaries calculate real results from synthetic data.
+- **Six projects, 42 tasks, three Kanban boards, and 21 daily notes.** Boards share native tasks with Projects and Calendar.
+- **Three live Canvas boards** for field observations, research, and expedition planning.
+- **Three original PDFs** with highlights, underlines, strikeouts, area comments, and ink. Captured passages and annotations support three reviewable decision connections.
+- **Six saved workspace layouts** and a full in-app field guide. Explore the organized Tree, metadata Navigator, graph customization, themes, optional AI settings, and RAG export.
+- **Open demo** creates a separate copy for existing users, then preserves edits on subsequent visits. Existing personal vaults are never reseeded.
 
-Calendar, tasks, PDF annotation, live Canvas queries, Navigator, thirteen chart types, Kanban, resizable panes, themes, optional BYOK suggestions and Markdown RAG export remain included. All seven modules start enabled in new vaults; existing saved choices are respected.
+Reading mode now hides valid frontmatter instead of treating it as prose. Charts opened from tool nodes leave more room for the visualization by starting with configuration collapsed. Slope labels avoid vertical overlap.
 
-## Download and run
+## Download and open
 
-1. Download **Aster-0.4.0-windows-x64.zip**.
-2. Extract the entire ZIP and open **Aster.exe**.
-3. Keep the accompanying files together. Your existing profile and vaults are stored separately.
+1. Download **Aster-0.5.0-windows-x64.zip**.
+2. Extract the entire ZIP and open **Aster.exe**. Keep its accompanying files together.
+3. New profiles open Pelagic Labs automatically. Existing users choose **Open demo**, then explore **Saved layouts**.
 
-No Node.js or developer tools are needed. This is an unsigned Windows x64 alpha. Compare the ZIP against **SHA256SUMS.txt** and back up the entire vault before updating. GitHub's Source code archives are not the runnable app. Setup instructions are included in the app folder.
+No Node.js, provider key, account, or network is required for the demo. **Pelagic-Labs-demo.zip** is an optional standalone vault copy; extract it, including `.aster`, and choose its folder using **Open**. App-created copies use the current date; the downloadable copy has an October 2, 2026 timeline.
 
-Start with **Tree view** or **Add tool node** in the graph. Use **Evidence** on a manual connection and **Charts** for workbook controls.
+This is an unsigned Windows x64 alpha. Verify assets against **SHA256SUMS.txt**. Vaults and profiles are stored separately from the app; back up the entire vault before updating. The app has no automatic updater.
 
-## Validation and limits
+## Validation and scope
 
-66 automated tests and four isolated desktop suites cover calculations, sources, map navigation, evidence selection, imports/exports, Kanban, split panes, themes, PDF geometry, restart persistence and 1,500-note navigation. Release workflows repeat the suites against the packaged executable and audit the distribution before upload.
+71 automated tests and five isolated desktop suites cover the app and demo. The new suite checks actual first launch, shared Kanban/task state, live metadata queries, PDF navigation, persisted demo edits, and preservation of an existing vault. Release workflows repeat all five suites against the packaged executable and audit the distribution. GitHub screenshots show the working synthetic demo.
 
-The workbook is a bounded analysis tool, not complete Excel compatibility. Pivot tables, named ranges, spill arrays, macros, legacy XLS and full formatting preservation remain unsupported. The diagram caps visible cards at 600. Source review compares saved records; PDF byte checks happen on open. Cloud sync, persistent large-vault indexing, OCR, annotated PDF export and automatic updates remain future work.
+All people, observations, budgets, and prices are fictional. The demo illustrates group organization; real-time collaboration and cloud sync are not implemented. Full Excel compatibility, pivot tables, OCR, annotated PDF export, persistent large-vault indexing, and a hosted RAG answering service remain outside this release.
 
-[Feature guide](https://github.com/Alfredo12111/Aster/blob/main/docs/FEATURES.md) · [Connected workspace](https://github.com/Alfredo12111/Aster/blob/main/docs/CONNECTED-WORKSPACE.md) · [Workbook controls](https://github.com/Alfredo12111/Aster/blob/main/docs/CHARTS.md) · [Validation](https://github.com/Alfredo12111/Aster/blob/main/docs/VALIDATION.md)
+[Demo tour](https://github.com/Alfredo12111/Aster/blob/main/docs/DEMO.md) · [Feature guide](https://github.com/Alfredo12111/Aster/blob/main/docs/FEATURES.md) · [Setup](https://github.com/Alfredo12111/Aster/blob/main/docs/GETTING-STARTED.md)

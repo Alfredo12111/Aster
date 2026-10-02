@@ -62,6 +62,7 @@ export type AiSettings = {
 export type AsterApi = {
   load(): Promise<VaultSnapshot>;
   openVault(): Promise<VaultSnapshot | null>;
+  openDemo(): Promise<VaultSnapshot>;
   createVault(): Promise<VaultSnapshot | null>;
   saveNote(input: {
     id: string;

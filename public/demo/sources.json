@@ -1,0 +1,434 @@
+[
+  {
+    "file": "reef-baseline.pdf",
+    "title": "Reef recovery baseline",
+    "annotations": [
+      {
+        "page": 1,
+        "kind": "highlight",
+        "quote": "Nursery survival increased from 72% to 89%.",
+        "comment": "Supports the Tideglass review decision; see the Ecology workbook.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 365
+            },
+            {
+              "x": 278.762,
+              "y": 365
+            },
+            {
+              "x": 278.762,
+              "y": 380
+            },
+            {
+              "x": 40,
+              "y": 380
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 1,
+        "kind": "underline",
+        "quote": "The six-site sample does not establish regional causality.",
+        "comment": "Keep this limitation in the decision note and RAG context.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 330
+            },
+            {
+              "x": 344.168,
+              "y": 330
+            },
+            {
+              "x": 344.168,
+              "y": 345
+            },
+            {
+              "x": 40,
+              "y": 345
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 1,
+        "kind": "ink",
+        "quote": "",
+        "comment": "Keep the decision tied to the six-site baseline, not a regional claim.",
+        "quads": [],
+        "points": [
+          {
+            "x": 405,
+            "y": 308
+          },
+          {
+            "x": 423,
+            "y": 301
+          },
+          {
+            "x": 450,
+            "y": 325
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "kind": "comment",
+        "quote": "Farwater requires a second inspection before expansion.",
+        "comment": "Assign a follow-up survey in the Tideglass project.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 332
+            },
+            {
+              "x": 342.32,
+              "y": 332
+            },
+            {
+              "x": 342.32,
+              "y": 347
+            },
+            {
+              "x": 40,
+              "y": 347
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "strikeout",
+        "quote": "One successful week is enough to approve every site.",
+        "comment": "Rejected shortcut: review paired observations and exceptions.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 297
+            },
+            {
+              "x": 326.447,
+              "y": 297
+            },
+            {
+              "x": 326.447,
+              "y": 312
+            },
+            {
+              "x": 40,
+              "y": 312
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 3,
+        "kind": "highlight",
+        "quote": "Keep the original quote when an interpretation changes.",
+        "comment": "Capture a new version only after reviewing the underlying source.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 375
+            },
+            {
+              "x": 338.00800000000004,
+              "y": 375
+            },
+            {
+              "x": 338.00800000000004,
+              "y": 390
+            },
+            {
+              "x": 40,
+              "y": 390
+            }
+          ]
+        ],
+        "points": []
+      }
+    ]
+  },
+  {
+    "file": "lantern-readiness.pdf",
+    "title": "Lantern network readiness",
+    "annotations": [
+      {
+        "page": 1,
+        "kind": "highlight",
+        "quote": "Deploy only after calibration, power and recovery checks.",
+        "comment": "The launch checklist maps these three gates to separate tasks.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 365
+            },
+            {
+              "x": 345.389,
+              "y": 365
+            },
+            {
+              "x": 345.389,
+              "y": 380
+            },
+            {
+              "x": 40,
+              "y": 380
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 1,
+        "kind": "underline",
+        "quote": "A spare recovery beacon is required for offshore stations.",
+        "comment": "Links the power design to the retrieval protocol.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 330
+            },
+            {
+              "x": 347.204,
+              "y": 330
+            },
+            {
+              "x": 347.204,
+              "y": 345
+            },
+            {
+              "x": 40,
+              "y": 345
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "comment",
+        "quote": "Station L-07 remains blocked pending the spare connector.",
+        "comment": "See the Supply chain note and the Lantern task board.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 382
+            },
+            {
+              "x": 353.914,
+              "y": 382
+            },
+            {
+              "x": 353.914,
+              "y": 397
+            },
+            {
+              "x": 40,
+              "y": 397
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "strikeout",
+        "quote": "Missing telemetry can be filled with invented observations.",
+        "comment": "Rejected: retain gaps and investigate the sensor.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 347
+            },
+            {
+              "x": 351.483,
+              "y": 347
+            },
+            {
+              "x": 351.483,
+              "y": 362
+            },
+            {
+              "x": 40,
+              "y": 362
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "ink",
+        "quote": "",
+        "comment": "Keep the decision tied to the six-site baseline, not a regional claim.",
+        "quads": [],
+        "points": [
+          {
+            "x": 405,
+            "y": 325
+          },
+          {
+            "x": 423,
+            "y": 318
+          },
+          {
+            "x": 450,
+            "y": 342
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "kind": "highlight",
+        "quote": "A green dashboard is a prompt to inspect evidence, not a guarantee.",
+        "comment": "Review source provenance before accepting the deployment claim.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 375
+            },
+            {
+              "x": 402.82,
+              "y": 375
+            },
+            {
+              "x": 402.82,
+              "y": 390
+            },
+            {
+              "x": 40,
+              "y": 390
+            }
+          ]
+        ],
+        "points": []
+      }
+    ]
+  },
+  {
+    "file": "expedition-plan.pdf",
+    "title": "The next tide",
+    "annotations": [
+      {
+        "page": 1,
+        "kind": "highlight",
+        "quote": "The portfolio allocation totals 180000 dollars.",
+        "comment": "Compare with the Budget worksheet SUM formula.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 162
+            },
+            {
+              "x": 279.961,
+              "y": 162
+            },
+            {
+              "x": 279.961,
+              "y": 177
+            },
+            {
+              "x": 40,
+              "y": 177
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "comment",
+        "quote": "Reallocate only after the project owner reviews the variance.",
+        "comment": "Connect the decision to the budget chart and owner task.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 375
+            },
+            {
+              "x": 360.063,
+              "y": 375
+            },
+            {
+              "x": 360.063,
+              "y": 390
+            },
+            {
+              "x": 40,
+              "y": 390
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "underline",
+        "quote": "The price index is fictional and is not a trading signal.",
+        "comment": "Use this sheet to learn financial chart controls only.",
+        "quads": [
+          [
+            {
+              "x": 40,
+              "y": 340
+            },
+            {
+              "x": 324.58799999999997,
+              "y": 340
+            },
+            {
+              "x": 324.58799999999997,
+              "y": 355
+            },
+            {
+              "x": 40,
+              "y": 355
+            }
+          ]
+        ],
+        "points": []
+      },
+      {
+        "page": 2,
+        "kind": "ink",
+        "quote": "",
+        "comment": "Keep the decision tied to the six-site baseline, not a regional claim.",
+        "quads": [],
+        "points": [
+          {
+            "x": 405,
+            "y": 318
+          },
+          {
+            "x": 423,
+            "y": 311
+          },
+          {
+            "x": 450,
+            "y": 335
+          }
+        ]
+      }
+    ]
+  }
+]

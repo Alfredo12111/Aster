@@ -12,6 +12,7 @@ import {
 import { exportChunks } from "../../../packages/core/rag";
 import { AiService } from "./ai";
 import { moduleStateSchema, dateSchema } from "../../../packages/core/modules";
+import { ensureDemoVault } from "../../../packages/demo/filesystem";
 
 if (process.env.ASTER_USER_DATA)
   app.setPath("userData", path.resolve(process.env.ASTER_USER_DATA));
@@ -35,6 +36,11 @@ const devUrl =
 const renderer = path.resolve(__dirname, "../dist/index.html");
 const trustedUrl = devUrl ?? pathToFileURL(renderer).href;
 const configFile = () => path.join(app.getPath("userData"), "workspace.json");
+const demoRoot = () => path.join(app.getPath("userData"), "Pelagic Labs");
+const openDemo = async () =>
+  useVault(
+    await ensureDemoVault(demoRoot(), path.resolve(__dirname, "../dist/demo")),
+  );
 
 function handle(channel: string, fn: (payload: any) => unknown, serial = true) {
   ipcMain.handle(channel, (event, payload) => {
@@ -92,15 +98,12 @@ async function boot() {
     try {
       root = JSON.parse(await fs.readFile(configFile(), "utf8")).root;
     } catch {}
-  root ??= path.join(app.getPath("userData"), "Aster Welcome");
   const ai = new AiService(app.getPath("userData"));
   // Keep startup errors in the app so a missing external drive does not destroy workspace settings.
   let startupError: unknown;
   try {
-    await useVault(
-      root,
-      !process.env.ASTER_INITIAL_VAULT && root.endsWith("Aster Welcome"),
-    );
+    if (root) await useVault(root);
+    else await openDemo();
   } catch (e) {
     startupError = e;
   }
@@ -115,6 +118,7 @@ async function boot() {
     });
     return result.canceled ? null : useVault(result.filePaths[0]);
   });
+  handle("vault:demo", openDemo);
   handle("vault:create", async () => {
     const result = await dialog.showSaveDialog(window!, {
       title: "Create a vault folder",

@@ -492,6 +492,7 @@ export function buildChart(chart: ChartDefinition, table: DataTable) {
       ...style,
       symbolSize: 8,
       endLabel: { show: true, formatter: "{a}" },
+      labelLayout: { moveOverlap: "shiftY" },
     }));
   } else {
     if (xIndex < 0) throw new Error("Choose a category column.");
