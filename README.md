@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/Alfredo12111/Aster/releases">Download for Windows</a> ·
   <a href="docs/GETTING-STARTED.md">Getting started</a> ·
-  <a href="docs/ADDON-ROADMAP.md">Feature guide</a> ·
+  <a href="docs/FEATURES.md">Feature guide</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
@@ -32,7 +32,7 @@ Your vault is a folder you own. The core experience works without an account, cl
 
 | | What you can do today |
 | --- | --- |
-| **Write and organize** | Local Markdown vaults, nested folders, search, wiki-link completion, backlinks, formatted preview, and Graph / Split / Write layouts. |
+| **Write and organize** | Local Markdown vaults, nested folders, search, wiki-link completion, backlinks, formatted preview, and multiple resizable panes, movable tabs, and saved layouts. |
 | **Make the graph yours** | Drag and pin nodes, change folder and note colors, add directed relationships, save filtered views, and choose clustered, radial, or force-based layouts. |
 | **Find useful connections** | On-device suggestions explain shared concepts. Optionally bring your own AI provider key to review candidate connections. You decide what becomes a link. |
 | **Work with dates** | Built-in day, week, and month Calendar views. Open or create daily notes, browse date metadata, and see tasks due that day. |
@@ -40,9 +40,12 @@ Your vault is a folder you own. The core experience works without an account, cl
 | **Read with a pen in hand** | PDF highlights, underlines, strikeouts, area comments, and freehand ink. Search annotations, jump to their location, and work with rotated or cropped pages. |
 | **Keep live answers in view** | Pin Aster Query results to movable, resizable Canvas cards. Tables refresh when the underlying notes change. |
 | **Navigate large collections** | Browse a virtualized tree based on folders or frontmatter hierarchy. Combine metadata, folder, and text filters while retaining parent context. |
+| **Explore structured data** | Thirteen chart types; live queries and Markdown tables; CSV/XLSX import; editable worksheets, formulas, statistics, trendlines, and PNG/SVG/CSV exports. |
+| **Organize work visually** | Native Kanban columns and ordered cards connected to tasks, notes and projects. Moving a card updates task status everywhere. |
+| **Arrange your workspace** | Combine any views in up to eight resizable panes, move tabs between panes, and save layouts. Choose Aster, Cyber, Lavender, Deep Ocean, Paper, or Rosewood. |
 | **Prepare knowledge for RAG** | Export JSONL chunks with source paths, note IDs, revisions, character spans, tags, and accepted relationships. |
 
-Calendar, Tasks & Projects, PDF Library, Canvas, and Navigator are optional per-vault modules. Enable them from the **puzzle icon**. Turning one off preserves its data.
+Calendar, Tasks & Projects, PDF Library, Canvas, Navigator, Charts, and Kanban are optional per-vault modules. Enable them from the **puzzle icon**. Turning one off preserves its data.
 
 <table>
   <tr>
@@ -59,11 +62,21 @@ Calendar, Tasks & Projects, PDF Library, Canvas, and Navigator are optional per-
 Screenshots use generated sample content, not personal vaults.
 </details>
 
+## New in 0.3
+
+![Live charts with an editable data source](docs/assets/charts.png)
+
+<table>
+<tr><td width="50%"><img src="docs/assets/kanban.png" alt="Native task Kanban"><br><strong>Work connected to your notes</strong></td><td width="50%"><img src="docs/assets/lavender.png" alt="Lavender theme with Kanban and Calendar panes"><br><strong>A workspace you can shape</strong></td></tr>
+</table>
+
+Read the [charts and formulas guide](docs/CHARTS.md), [workspace controls](docs/FEATURES.md#flexible-workspaces), and [remaining addon roadmap](docs/ADDON-ROADMAP.md).
+
 ## Start in a few minutes
 
 ### Download the Windows app
 
-1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.2.0-windows-x64.zip**.
+1. Go to [Releases](https://github.com/Alfredo12111/Aster/releases) and download **Aster-0.3.0-windows-x64.zip**.
 2. **Extract the entire ZIP** to a normal folder.
 3. Open **Aster.exe** inside it. Keep the accompanying files beside the executable.
 4. Explore the welcome vault, or choose **New vault** / **Open** for your own notes.
@@ -96,7 +109,7 @@ My Vault/
     source.pdf
   .aster/
     vault.json       # note identity, graph views, relationships
-    modules.json     # tasks, projects, Canvas, PDF annotations
+    modules.json     # tasks, projects, Canvas, PDFs, charts, Kanban, layouts
     history/         # earlier note content
     module-history/  # earlier module state
     trash/           # recoverable deleted notes
@@ -122,15 +135,15 @@ SORT date DESC
 LIMIT 50
 ```
 
-Pin it to Canvas and watch the results update as notes change. Query evaluation runs in a worker and does not execute arbitrary code. [Read the query reference →](docs/ADDON-ROADMAP.md#canvas-and-aster-query)
+Pin it to Canvas and watch the results update as notes change. Query evaluation runs in a worker and does not execute arbitrary code. [Read the query reference →](docs/FEATURES.md#canvas-and-aster-query)
 
 ## Honest about the alpha
 
-The working modules above are implemented and tested. **Cloud sync, persistent large-vault indexing, OCR, annotated PDF export, a vector database, and an automatic updater are not included.** RAG export produces attributed chunks; it does not run an answering pipeline. PDF annotations use editable Aster sidecars.
+The working modules above are implemented and tested. Charting includes all requested chart families; the worksheet engine is a bounded analysis tool, with documented formula coverage rather than complete Excel compatibility. **Cloud sync, persistent large-vault indexing, OCR, annotated PDF export, a vector database, and an automatic updater are not included.** RAG export produces attributed chunks; it does not run an answering pipeline. PDF annotations use editable Aster sidecars.
 
 Current protective limits are 20,000 Markdown notes, 2 MB per note, 100 MB of total note text, and 100 MB per PDF. These are limits, not performance promises. The app still loads full note snapshots. The metadata navigator is virtualized; the original file explorer is not.
 
-The validation record covers **30 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
+The validation record covers **55 automated tests**, packaged desktop workflows, restart persistence, PDF rotation/crop geometry, a **1,500-note navigation scenario**, and a **10,000-note hierarchy core test**. See [Validation](docs/VALIDATION.md) for the exact scope and remaining gaps.
 
 ## Build with us
 
@@ -143,6 +156,7 @@ npm run build
 npm test
 npm run test:desktop
 npm run test:modules
+npm run test:visual
 npm run audit:publish
 ```
 

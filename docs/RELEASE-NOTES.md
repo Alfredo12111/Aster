@@ -1,21 +1,29 @@
-# Aster 0.2.0 — Windows desktop alpha
+# Aster 0.3.0 — Visual workspaces
 
-Local Markdown vaults, a customizable knowledge graph, and built-in tools for research and connected thinking.
+Charts, connected Kanban, resizable workspaces and six themes join Aster's local Markdown vaults and built-in research tools.
 
-Included: Calendar; Tasks & Projects; PDF highlighting, underline, strikeout, comments and ink; annotation navigation; live Aster Query Canvas cards; metadata/folder hierarchy navigation; optional BYOK AI suggestions; and attributed RAG JSONL export.
+- Thirteen chart types from live queries, Markdown tables and imported CSV/XLSX data.
+- Editable worksheets with formulas, cross-sheet references, statistics, financial functions, regression and image/data exports.
+- Kanban cards connected to tasks, notes and projects; drag, reorder and customize columns.
+- Combine any tools in resizable panes, move tabs, and save layouts.
+- Cyber, Lavender, Deep Ocean, Paper, Rosewood and the original Aster theme.
+
+Calendar, Tasks & Projects, PDF annotation/navigation, live Canvas queries, metadata navigation, BYOK suggestions and RAG JSONL export remain included.
 
 ## Download and run
 
-1. Download **Aster-0.2.0-windows-x64.zip** from the assets below.
+1. Download **Aster-0.3.0-windows-x64.zip**.
 2. Extract the entire ZIP.
-3. Open **Aster.exe** inside the extracted folder. Keep the accompanying files together.
+3. Open **Aster.exe**. Keep its accompanying files together.
 
-No Node.js or developer tools are required. This is an unsigned Windows x64 build. Compare the ZIP's SHA-256 hash with **SHA256SUMS.txt** before running. The archive includes GETTING-STARTED.md with detailed instructions. The generated **Source code** links are not runnable app downloads.
+No Node.js or developer tools are required. This is an unsigned Windows x64 alpha. Compare the ZIP's SHA-256 hash with **SHA256SUMS.txt**. The archive includes setup instructions; GitHub's generated Source code downloads are not the runnable app.
 
-The app opens a synthetic welcome vault. Use **Open** or **New vault** for your own notes, and the **puzzle icon** to enable optional modules. Keep a backup of important vaults, including their hidden `.aster` metadata and attachments.
+Use the puzzle icon to enable Charts and Kanban, **＋ View** and split buttons to arrange tools, and **Appearance & themes** to choose a theme. Back up your entire vault before updating.
 
 ## Validation and limits
 
-30 automated tests (including 28 core/storage/provider/protocol tests) and both packaged desktop suites passed locally, including restart persistence, rotated/cropped PDF coordinates, live query refresh, and 1,500-note navigation. Source and app-archive publication checks found no matching credential or personal-path findings. Screenshots and tests use synthetic content. These checks are not a comprehensive security certification.
+55 automated tests and three desktop suites cover chart families, financial calculations, import/export, live updates, Kanban dragging, pane sizing, tab movement, themes, restart persistence, rotated/cropped PDF geometry and 1,500-note navigation. Release workflows run these against the packaged executable and audit the distribution before upload.
 
-Cloud sync, persistent large-vault indexing, annotated PDF export, OCR, a vector database and automatic updates are not included in this alpha. Full details: [feature guide](https://github.com/Alfredo12111/Aster/blob/main/docs/ADDON-ROADMAP.md) and [validation record](https://github.com/Alfredo12111/Aster/blob/main/docs/VALIDATION.md).
+The worksheet engine has documented formula coverage, not full Excel compatibility. Imports are snapshots; workbook formatting, macros, legacy XLS, named ranges and spill arrays are unsupported. Cloud sync, persistent large-vault indexes, OCR, annotated PDF export and automatic updates remain future work.
+
+[Feature guide](https://github.com/Alfredo12111/Aster/blob/main/docs/FEATURES.md) · [Charts and limits](https://github.com/Alfredo12111/Aster/blob/main/docs/CHARTS.md) · [Validation](https://github.com/Alfredo12111/Aster/blob/main/docs/VALIDATION.md)

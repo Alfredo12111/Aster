@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 — 2026-10-02
+
+- Built-in Charts: thirteen chart types; live Aster Query and Markdown tables; CSV/TSV/XLSX import; selected ranges and editable worksheets.
+- Formula calculation with cross-sheet references, statistical and financial functions; summaries, aggregation, regression, moving averages, distributions and correlation heatmaps. PNG/SVG/CSV chart export and calculated-value XLSX export.
+- Native Kanban with source-linked task cards, project scopes, configurable columns, drag/reorder, keyboard movement and shared task statuses.
+- Arbitrary horizontal/vertical pane splits, draggable dividers, movable tabs, named layouts, and restart persistence.
+- Six themes: Aster, Cyber, Lavender, Deep Ocean, Paper and Rosewood.
+- Shared module queue, chart draft retention/autosave, stale chart/workbook checks, isolated calculation workers, bounded imports, and safer literal CSV export.
+- Preserved existing modules; corrected single-pane height constraints and tested rotated PDF selection at a fitting zoom.
+- Updated feature page, setup guide, chart reference and remaining-only roadmap. Added the visual desktop suite to CI and release gates.
+- 55 core/storage/publication tests; discovery excludes local audit copies.
+
 ## 0.2.0 — 2026-10-01
 
 ### Knowledge workspace

@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   ListTree,
   Puzzle,
+  ChartNoAxesCombined,
   RefreshCw,
 } from "lucide-react";
 import {
@@ -21,6 +22,9 @@ import TasksModule from "./TasksModule";
 import CanvasModule from "./CanvasModule";
 import NavigatorModule from "./NavigatorModule";
 import "./modules.css";
+import { useModules } from "./ModuleProvider";
+import KanbanModule from "./KanbanModule";
+const ChartsModule = lazy(() => import("./ChartsModule"));
 const PdfModule = lazy(() => import("./PdfModule"));
 export type Commit = (change: (state: ModuleState) => void) => Promise<void>;
 export type ModuleProps = {
@@ -30,6 +34,18 @@ export type ModuleProps = {
   onOpen(id: string): void;
 };
 const info = {
+  charts: {
+    title: "Charts",
+    icon: ChartNoAxesCombined,
+    description:
+      "Live data, editable worksheets, and charts for every question.",
+  },
+  kanban: {
+    title: "Kanban",
+    icon: FolderKanban,
+    description:
+      "Move connected tasks through columns, with notes close at hand.",
+  },
   calendar: {
     title: "Calendar",
     icon: CalendarDays,
@@ -61,6 +77,8 @@ type Props = {
   vault: VaultSnapshot;
   onOpen(id: string): void;
   onVault(vault: VaultSnapshot): void;
+  initialView?: ModuleName | "modules" | "projects";
+  onViewChange?(view: ModuleName | "modules" | "projects"): void;
   initialTask?: { noteId: string; excerpt: string } | null;
   onTaskHandled(): void;
 };
@@ -69,100 +87,29 @@ export default function ModuleHost({
   onOpen,
   onVault,
   initialTask,
+  initialView = "modules",
+  onViewChange,
   onTaskHandled,
 }: Props) {
-  const [snapshot, setSnapshot] = useState<ModuleSnapshot | null>(null),
-    [active, setActive] = useState<ModuleName | "modules">(
-      initialTask ? "tasks" : "modules",
+  const { snapshot, commit, pending, error, reload, importPdf } = useModules();
+  const [active, setActiveLocal] = useState<ModuleName | "modules">(
+    initialTask ? "tasks" : initialView === "projects" ? "tasks" : initialView,
+  );
+  const [projectView, setProjectView] = useState(initialView === "projects");
+  const setActive = (view: ModuleName | "modules") => {
+    setActiveLocal(view);
+    onViewChange?.(view);
+  };
+  useEffect(() => {
+    setActiveLocal(
+      initialTask
+        ? "tasks"
+        : initialView === "projects"
+          ? "tasks"
+          : initialView,
     );
-  const [error, setError] = useState(""),
-    [pending, setPending] = useState(0),
-    [projectView, setProjectView] = useState(false);
-  const latest = useRef<ModuleSnapshot | null>(null),
-    queue = useRef<Promise<unknown>>(Promise.resolve()),
-    pendingRef = useRef(0),
-    alive = useRef(true),
-    generation = useRef(0);
-  const apply = (value: ModuleSnapshot) => {
-    if (value.vaultId !== vault.id) return;
-    latest.current = value;
-    if (alive.current) setSnapshot(value);
-  };
-  const reload = async () => {
-    const token = ++generation.current;
-    try {
-      const result = await window.aster.loadModules();
-      if (
-        token === generation.current &&
-        !pendingRef.current &&
-        alive.current
-      ) {
-        apply(result);
-        setError("");
-      }
-    } catch (e) {
-      if (token === generation.current && alive.current) setError(String(e));
-    }
-  };
-  useEffect(() => {
-    alive.current = true;
-    void reload();
-    const off = window.aster.onVaultChanged(() => {
-      if (!pendingRef.current) void reload();
-    });
-    return () => {
-      alive.current = false;
-      off();
-    };
-  }, [vault.id]);
-  useEffect(() => {
-    const guard = (e: BeforeUnloadEvent) => {
-      if (pendingRef.current) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", guard);
-    return () => {
-      void queue.current.finally(() =>
-        window.removeEventListener("beforeunload", guard),
-      );
-    };
-  }, []);
-  const commit: Commit = (change) => {
-    generation.current++;
-    pendingRef.current++;
-    setPending(pendingRef.current);
-    const op = queue.current.then(async () => {
-      const current = latest.current;
-      if (!current) throw new Error("Module data is not loaded.");
-      const state = structuredClone(current.state);
-      change(state);
-      const result = await window.aster.saveModules({
-        vaultId: vault.id,
-        revision: current.revision,
-        state,
-      });
-      apply(result);
-      setError("");
-    });
-    queue.current = op.catch(() => {});
-    return op
-      .catch((e) => {
-        if (alive.current)
-          setError(
-            String(e).replace(
-              /^Error: Error invoking remote method '[^']+': Error: /,
-              "",
-            ),
-          );
-        throw e;
-      })
-      .finally(() => {
-        pendingRef.current--;
-        if (alive.current) setPending(pendingRef.current);
-      });
-  };
+    setProjectView(initialView === "projects");
+  }, [initialView]);
   const taskEnableRequested = useRef(false);
   useEffect(() => {
     if (
@@ -213,8 +160,9 @@ export default function ModuleHost({
           <button
             className={active === "tasks" && projectView ? "active" : ""}
             onClick={() => {
-              setActive("tasks");
+              setActiveLocal("tasks");
               setProjectView(true);
+              onViewChange?.("projects");
             }}
           >
             <FolderKanban size={15} />
@@ -284,6 +232,14 @@ export default function ModuleHost({
             })}
           </div>
         </div>
+      ) : active === "kanban" ? (
+        <KanbanModule {...shared!} />
+      ) : active === "charts" ? (
+        <Suspense
+          fallback={<div className="module-loading">Loading chart tools…</div>}
+        >
+          <ChartsModule {...shared!} />
+        </Suspense>
       ) : active === "calendar" ? (
         <CalendarModule {...shared!} onVault={onVault} />
       ) : active === "tasks" ? (
@@ -301,18 +257,7 @@ export default function ModuleHost({
         <Suspense
           fallback={<div className="module-loading">Loading PDF tools…</div>}
         >
-          <PdfModule
-            {...shared!}
-            onImport={async () => {
-              await queue.current;
-              try {
-                const result = await window.aster.importPdf();
-                if (result) apply(result);
-              } catch (e) {
-                setError(String(e));
-              }
-            }}
-          />
+          <PdfModule {...shared!} onImport={importPdf} />
         </Suspense>
       )}
     </section>

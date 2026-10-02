@@ -1,6 +1,6 @@
 # Aster architecture
 
-Status: working Windows desktop alpha 0.2, 1 October 2026. “Aster” is a working product name.
+Status: working Windows desktop alpha 0.3, 1 October 2026. “Aster” is a working product name.
 
 The product is a local knowledge workbench for visual thinkers and people curating RAG datasets. The durable assets are Markdown notes, stable identities, accepted relationships, source provenance, and independently saved spatial views.
 
@@ -57,7 +57,7 @@ Each graph view owns positions, layout and filter. Colors and display preference
 
 ## Built-in modules and metadata
 
-The complete module surface is documented in [ADDON-ROADMAP.md](ADDON-ROADMAP.md). YAML frontmatter is parsed with bounded size, nesting and alias expansion. Notes carry typed metadata plus a visible parse error, with original Markdown retained. Calendar and query consumers use this same representation.
+The complete module surface is documented in [FEATURES.md](FEATURES.md). YAML frontmatter is parsed with bounded size, nesting and alias expansion. Notes carry typed metadata plus a visible parse error, with original Markdown retained. Calendar and query consumers use this same representation.
 
 Module records live in one versioned, validated vault sidecar: per-vault enable flags, date settings, UUID-addressed tasks/projects, Canvas boards/cards and PDF documents/annotations. Writes carry an expected SHA-256 revision, run through the repository queue, save previous state in recovery history, then atomically replace the sidecar. The renderer serializes changes against the latest successful snapshot and discards stale reload responses. Conflicting external sidecar edits require reload. This is whole-sidecar optimistic concurrency, not fine-grained collaborative merging. History currently needs a retention policy.
 
@@ -128,3 +128,13 @@ The current protocol models revision conflicts; it is not a CRDT implementation.
 - No third-party plugin execution until a capability boundary, signing/trust model and crash isolation are designed.
 
 Sources checked for the implementation: [Electron security](https://www.electronjs.org/docs/latest/tutorial/security), [Electron IPC](https://www.electronjs.org/docs/latest/tutorial/ipc), [OpenAI Responses](https://developers.openai.com/api/docs/guides/migrate-to-responses), [Anthropic API authentication](https://platform.claude.com/docs/en/manage-claude/authentication).
+
+## Charts and pane architecture (0.3)
+
+The portable core now contains schemas for recursive pane layouts, chart specifications, worksheets, and Kanban columns/card ordering. Older version-1 sidecars receive default empty collections. Workspace trees validate unique IDs, active tabs, depth and pane/tab bounds. Theme and layout state live with the vault.
+
+A single React module provider serializes mutations across panes and checks the sidecar revision. Note-file changes and module-file changes use separate notifications; resizing or switching themes does not trigger a full note rescan. Chart/workbook editors also check their base record to reject stale edits. A vault switch flushes active worksheet/chart editors.
+
+Chart calculations run in disposable workers. Source adapters normalize Aster queries, Markdown tables and imported worksheets. The mathematical core handles aggregation, Welford sample variance, compensated sums, inclusive quantiles, histograms, Tukey boxes, Gaussian density estimates, Pearson correlation, trailing averages and centered/scaled QR regressions. ECharts renders charts; ExcelJS handles bounded XLSX imports and calculated-value exports. Formula libraries use parsed expressions with bounded reference depth/count and worker lifetime. Native exports validate format and use a user-selected save path.
+
+These collections still share the revisioned module JSON file and history snapshots. A large user base does not imply a deployed service: the existing SQLite/index and optional sync designs remain future infrastructure. Imported workbooks are local snapshots; there is no external workbook synchronization.

@@ -21,6 +21,8 @@ export function arrange(notes: Note[], layout: 'cluster' | 'radial' | 'force'): 
 }
 type Props = { notes: Note[]; edges: GraphEdge[]; settings: VaultSettings; view: GraphView; selected: string; groups: string[]; onSelect(id: string): void; onOpen(id: string): void; onMove(id: string, point: Point): void };
 export default function Graph({ notes, edges, settings, view, selected, groups, onSelect, onOpen, onMove }: Props) {
+  const [themeRevision,setThemeRevision]=useState(0);
+  useEffect(()=>{const update=()=>setThemeRevision(n=>n+1);window.addEventListener("aster-theme",update);return()=>window.removeEventListener("aster-theme",update);},[]);
   const canvas = useRef<HTMLCanvasElement>(null), container = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 800, h: 600 }), [camera, setCamera] = useState({ x: 0, y: 0, zoom: .75 });
   const [hover, setHover] = useState(''), [dragPosition, setDragPosition] = useState<{ id: string; point: Point } | null>(null);
@@ -63,7 +65,7 @@ export default function Graph({ notes, edges, settings, view, selected, groups, 
         const tip = { x: q.x - Math.cos(angle) * r, y: q.y - Math.sin(angle) * r };
         ctx.beginPath(); ctx.moveTo(tip.x, tip.y); ctx.lineTo(tip.x - Math.cos(angle - .4) * 7, tip.y - Math.sin(angle - .4) * 7); ctx.moveTo(tip.x, tip.y); ctx.lineTo(tip.x - Math.cos(angle + .4) * 7, tip.y - Math.sin(angle + .4) * 7); ctx.stroke();
       }
-      if (edge.origin === 'manual' && highlighted && camera.zoom > .6) { ctx.fillStyle = '#c6c6ce'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(edge.kind, (p.x + q.x) / 2, (p.y + q.y) / 2 - 8); }
+      if (edge.origin === 'manual' && highlighted && camera.zoom > .6) { ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--text"); ctx.font = '11px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(edge.kind, (p.x + q.x) / 2, (p.y + q.y) / 2 - 8); }
     }
     const occupied: { x: number; y: number; w: number; h: number }[] = [];
     const drawingOrder = [...notes].sort((a, b) => (b.id === active ? 2 : adjacent.has(b.id) ? 1 : 0) - (a.id === active ? 2 : adjacent.has(a.id) ? 1 : 0));
@@ -75,7 +77,7 @@ export default function Graph({ notes, edges, settings, view, selected, groups, 
       ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill();
       if (settings.showLabels && (notes.length < 250 || camera.zoom > 1.2 || isActive)) {
         ctx.font = `${isActive ? '600' : '400'} ${isActive ? 13 : 12}px Segoe UI`; ctx.textAlign = 'center';
-        ctx.fillStyle = isActive ? '#f4f0e9' : '#b8bac0';
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(isActive?"--text":"--muted");
         const label = note.title.length > 30 ? note.title.slice(0, 29) + '…' : note.title;
         const width = ctx.measureText(label).width;
         const box = { x: p.x - width / 2 - 4, y: p.y + r + 7, w: width + 8, h: 19 };
@@ -85,7 +87,7 @@ export default function Graph({ notes, edges, settings, view, selected, groups, 
       }
     }
     ctx.globalAlpha = 1;
-  }, [notes, edges, positions, settings, camera, size, selected, hover]);
+  }, [notes, edges, positions, settings, camera, size, selected, hover,themeRevision]);
   useEffect(() => {
     const el = canvas.current!;
     const wheel = (e: WheelEvent) => { e.preventDefault(); const p = local(e), world = invert(p); const zoom = Math.min(4, Math.max(.08, camera.zoom * Math.exp(-e.deltaY * .0015))); setCamera({ x: p.x - size.w / 2 - world.x * zoom, y: p.y - size.h / 2 - world.y * zoom, zoom }); };

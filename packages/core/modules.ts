@@ -1,10 +1,14 @@
 import { z } from "zod";
+import { chartSchema, datasetSchema } from "./chart-model";
+import { workspaceSchema } from "./workspace";
 export const moduleNames = [
   "calendar",
   "tasks",
   "pdf",
   "canvas",
   "navigator",
+  "charts",
+  "kanban",
 ] as const;
 export type ModuleName = (typeof moduleNames)[number];
 export const dateSchema = z
@@ -78,6 +82,16 @@ export const documentSchema = z.object({
     .max(50000)
     .refine(uniqueIds, "Duplicate annotation IDs"),
 });
+export const kanbanColumnSchema=z.object({
+  id,title:z.string().trim().min(1).max(100),
+  status:taskSchema.shape.status,color:z.string().regex(/^#[a-f\d]{6}$/i),
+});
+export const kanbanBoardSchema=z.object({
+  id,name:z.string().trim().min(1).max(160),projectId:id.nullable(),
+  columns:z.array(kanbanColumnSchema).min(1).max(30).refine(uniqueIds,"Duplicate column IDs"),
+  cards:z.array(z.object({taskId:id,columnId:id})).max(100000)
+    .refine(cards=>new Set(cards.map(c=>c.taskId)).size===cards.length,"A task can appear once in a board"),
+}).refine(b=>b.cards.every(c=>b.columns.some(col=>col.id===c.columnId)),"A card refers to a missing column");
 export const moduleStateSchema = z.object({
   version: z.literal(1),
   enabled: z.object({
@@ -86,6 +100,8 @@ export const moduleStateSchema = z.object({
     pdf: z.boolean(),
     canvas: z.boolean(),
     navigator: z.boolean(),
+    charts: z.boolean().default(false),
+    kanban: z.boolean().default(false),
   }),
   calendar: z.object({
     dailyFolder: z.string().min(1).max(300),
@@ -107,7 +123,13 @@ export const moduleStateSchema = z.object({
     .array(documentSchema)
     .max(10000)
     .refine(uniqueIds, "Duplicate document IDs"),
+  datasets:z.array(datasetSchema).max(100).refine(uniqueIds,"Duplicate dataset IDs").default([]),
+  charts:z.array(chartSchema).max(1000).refine(uniqueIds,"Duplicate chart IDs").default([]),
+  kanban:z.array(kanbanBoardSchema).max(100).refine(uniqueIds,"Duplicate Kanban board IDs").default([]),
+  workspace:workspaceSchema,
 });
+export type KanbanBoard=z.infer<typeof kanbanBoardSchema>;
+export type KanbanColumn=z.infer<typeof kanbanColumnSchema>;
 export type Task = z.infer<typeof taskSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type QueryCard = z.infer<typeof cardSchema>;
@@ -128,12 +150,16 @@ export const emptyModuleState = (): ModuleState => ({
     pdf: false,
     canvas: false,
     navigator: false,
+    charts:false,
+    kanban:false,
   },
   calendar: { dailyFolder: "Daily", weekStartsOn: 1 },
   tasks: [],
   projects: [],
   boards: [],
   documents: [],
+  datasets:[],charts:[],kanban:[],
+  workspace:{layout:null,saved:[],theme:"aster"},
 });
 export const localDate = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;

@@ -29,7 +29,7 @@ These are product hypotheses to validate with real research workflows. The prior
 
 ## Further product work
 
-The requested built-in Calendar, Tasks & Projects, PDF annotation, annotation navigation, Canvas queries, and metadata hierarchy modules are implemented in 0.2 and documented in [ADDON-ROADMAP.md](ADDON-ROADMAP.md). The items below are broader product work beyond those modules.
+The requested built-in Calendar, Tasks & Projects, PDF annotation, annotation navigation, Canvas queries, and metadata hierarchy modules shipped in 0.2. Charts, Kanban, arbitrary resizable panes, saved layouts, and six themes shipped in 0.3 and are and documented in [FEATURES.md](FEATURES.md). The items below are broader product work beyond those modules.
 
 1. **Trust the vault.** Finish rename/link repair, recover/restore UI, folder drag-and-drop, external change reconciliation, attachments and migration tests. Add source/claim/concept note kinds.
 2. **Handle real scale.** SQLite indexing, lazy document loading, virtualized explorer, incremental indexing and multilevel graph rendering. Define test corpora before target metrics.

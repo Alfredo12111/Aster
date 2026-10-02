@@ -1,11 +1,11 @@
 # Validation record
 
-Aster 0.2.0, tested 1 October 2026 on the development Windows host with Node.js 24.19.0.
+Aster 0.3.0, tested 1 October 2026 on the development Windows host with Node.js 24.19.0.
 
 ## Completed
 
 - TypeScript typecheck and production renderer/main/preload build.
-- 28 automated tests across six files. The original core/storage/provider-mock/protocol coverage includes: wiki link resolution and ambiguity, code exclusion, typed relationships, local suggestions, RAG span coverage and stable IDs, native save/reopen/history, stale/concurrent write rejection, unsafe paths/junctions, move collision and trash, corrupt manifest preservation, provider key boundary and response validation, cross-vault sync batches.
+- 55 automated tests across ten source files. The original core/storage/provider-mock/protocol coverage includes: wiki link resolution and ambiguity, code exclusion, typed relationships, local suggestions, RAG span coverage and stable IDs, native save/reopen/history, stale/concurrent write rejection, unsafe paths/junctions, move collision and trash, corrupt manifest preservation, provider key boundary and response validation, cross-vault sync batches.
 - An isolated session of the packaged Windows executable verifies startup, nested note creation, editing/autosave to an actual Markdown file, wiki links, typed relationships, formatted preview, saved views, filtering, background layout, masked key field, persistence reload, drag-position persistence, external edit conflict recovery, and sandbox/context isolation.
 - Added core/storage tests cover bounded YAML and typed metadata, date-only arithmetic across leap days/year/DST boundaries, Aster Query filtering/sorting/limits and rejected syntax, hierarchy cycles/missing parents, a 10,000-note chain, idempotent daily notes, module round-trip and disabling, stale module writes, duplicate IDs, path normalization/traversal rejection, PDF deduplication, source-fingerprint mismatch, annotation geometry validation and corrupt-sidecar preservation.
 - The module desktop suite passes against the actual packaged executable. It exercises all three calendar views; daily-note creation; task creation from notes with status/priority/due/project; project-related notes; live Canvas queries with external Markdown changes; additional-filter preservation in the builder; saved card movement/resizing; metadata filters and ancestor context; all five PDF tools; comment editing/deletion/search; undo/redo; annotation navigation; zoom/rotation; and module disable/re-enable.
@@ -13,6 +13,12 @@ Aster 0.2.0, tested 1 October 2026 on the development Windows host with Node.js 
 - A 1,500-note folder added through the filesystem is detected by the running app. The navigator mounts at most 38 rows, scrolls to the last note, then resets to a visible result after filtering. Creating a task from a note also enables a disabled Tasks module.
 - Visual inspection of graph, split editor, discovery, Calendar, Projects, Canvas, metadata navigation, and PDF screenshots. A regression check confirms loading PDF styles does not change the file-tree background.
 - npm dependency audit reported no known vulnerabilities at install time. This is not a security review or supply-chain guarantee.
+
+## New visual workspace coverage
+
+All three desktop suites passed locally against the packaged 0.3.0 Windows executable. The visual desktop suite exercises all thirteen chart types; XLSX formula import and calculated export; CSV imports; worksheet edits and recalculation; undo/redo; selected-range charts; SVG/PNG/CSV exports through the native save boundary; live Markdown/metadata sources; save on view changes; Kanban drag/reorder with native task status checks; column editing; pane resizing; tab movement; named layout restoration; six themes; and full restart persistence. File-dialog results are replaced only to select synthetic test paths.
+
+Core tests additionally check finite chart options, invalid OHLC, category aggregation, calendar duplicates/invalid dates, exact category trend predictions, polynomial/exponential fits, PMT/NPV/FV, formula errors/cycles, CSV escaping, XLSX round trips/archive limits, old-sidecar defaults, Kanban ordering, and nested pane identity/collapse rules. Test discovery is limited to tests/; ignored local audit copies are not counted.
 
 ## Publication checks
 
@@ -24,9 +30,9 @@ The module desktop test uses a 1280 × 720 viewport, centers PDF text below the 
 
 ## Reproduce
 
-Run `npm run build`, `npm test`, `npm run test:desktop`, and `npm run test:modules`. Set `ASTER_PACKAGED_EXE` to the absolute path of `release/win-unpacked/Aster.exe` to test the packaged app. Both desktop suites create isolated profiles and use no personal vault or API key. The PDF import test replaces only the native file-picker result to choose its generated fixture; import, rendering, editing and persistence use the actual app APIs and UI.
+Run `npm run build`, `npm test`, `npm run test:desktop`, `npm run test:modules`, and `npm run test:visual`. Set `ASTER_PACKAGED_EXE` to the absolute path of `release/win-unpacked/Aster.exe` to test the packaged app. All three desktop suites create isolated profiles and use no personal vault or API key. The PDF import test replaces only the native file-picker result to choose its generated fixture; import, rendering, editing and persistence use the actual app APIs and UI.
 
-Windows packaging completed with `npm run package`. The directory build is unsigned and requires its entire `win-unpacked` folder. The module guide replaces the former phased addon roadmap with the implemented feature and query reference.
+Windows packaging completed with `npm run package`. The directory build is unsigned and requires its entire `win-unpacked` folder. Shipped capabilities are in FEATURES.md and CHARTS.md; ADDON-ROADMAP.md contains remaining work only.
 
 ## Synthetic scale baseline
 
@@ -42,6 +48,7 @@ These measure pure core algorithms on this host. They do **not** measure full de
 
 ## Not verified
 
+- Complete Excel formula/workbook compatibility, legacy XLS, macros, formatting round trips, arbitrary-precision finance, or interactive performance at all protective worksheet limits.
 - Real OpenAI/Anthropic calls, billing, account-specific model access or provider outages. Mock responses were used and no real key was supplied.
 - PostgreSQL schema execution, sync service integration, encryption protocol, multi-user isolation under a running backend, or cloud load. These are architecture foundations only.
 - The PDF corpus does not exhaust malformed/encrypted documents, scanned-page OCR, unusual text rotations, CJK/complex-font combinations, very large documents, or every image codec. Fonts/CMaps/decoders are bundled but that is not comprehensive format certification. Annotated PDF export remains deferred.

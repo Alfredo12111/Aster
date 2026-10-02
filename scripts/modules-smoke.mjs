@@ -47,7 +47,7 @@ try {
   await page.getByTitle("Reload from disk", { exact: true }).click();
   await expect(page.locator(".tree-note")).toHaveCount(19);
   await page.getByTitle("Built-in modules", { exact: true }).click();
-  await expect(page.locator(".module-cards article")).toHaveCount(5);
+  await expect(page.locator(".module-cards article")).toHaveCount(7);
   for (const label of [
     "Enable Calendar",
     "Enable Tasks & Projects",
@@ -109,6 +109,9 @@ try {
   await page
     .getByRole("checkbox", { name: "Complete Review evidence", exact: true })
     .click();
+  // Return to one module pane before the legacy module navigation checks.
+  await page.getByTitle("Built-in modules", { exact: true }).click();
+  await expect(page.locator(".dock-pane")).toHaveCount(1);
   await page.getByRole("button", { name: "Projects", exact: true }).click();
   await page
     .locator(".projects-list")
@@ -345,6 +348,8 @@ try {
   await expect(page.locator(".annotation-selected polyline")).toBeVisible();
   await page.screenshot({ path: path.join(results, "aster-pdf.png") });
   step("Markup created on rotated and cropped pages");
+  // Fit the long vertical text line inside the shorter docked PDF viewport.
+  for(let i=0;i<3;i++)await page.getByTitle("Zoom out PDF",{exact:true}).click();
   await page.getByTitle("Underline text", { exact: true }).click();
   await selectText(0);
   await expect(page.locator(".annotation-entry")).toHaveCount(6);
@@ -354,6 +359,7 @@ try {
     .boundingBox();
   expect(underline.height).toBeGreaterThan(100);
   expect(underline.width).toBeLessThan(5);
+  for(let i=0;i<3;i++)await page.getByTitle("Zoom in PDF",{exact:true}).click();
   await page.getByTitle("Next PDF page", { exact: true }).click();
   await expect(page.locator(".pdf-page")).toHaveAttribute(
     "data-page-number",
@@ -400,7 +406,7 @@ try {
   page.on("pageerror", (e) => errors.push(e.message));
   page.setDefaultTimeout(15000);
   await expect(page.locator(".tree-note")).toHaveCount(20);
-  await page.getByTitle("Built-in modules", { exact: true }).click();
+  await expect(page.locator(".annotation-entry")).toHaveCount(7);
   expect((await page.evaluate(() => window.aster.loadModules())).state).toEqual(
     persisted.state,
   );
